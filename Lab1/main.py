@@ -9,8 +9,13 @@ from lines import DDA
 from lines import Bresenham
 from lines import Wu
 
+from circle.EBresenham import EBresenham
+from circle.Hyperbola import draw_hyperbola
+from circle.Parabola import plot_parabola
+
 logger.add(sys.stderr, format="{time} {level} {message}", filter="my_module", level="INFO")
 logger.add("out.log")
+
 
 """
 window layout
@@ -19,24 +24,25 @@ window = Tk()
 window.title("Graphical Editor")
 window.geometry("800x660")
 
+buttons_frame = Frame(window)
+buttons_frame.grid(row=0, column=1)
 """
 canvas layout
 """
-canvas = Canvas(window, width=625, height=700, background="white")
+canvas = Canvas(window, width=500, height=800, background="white")
 canvas.grid(row=0, column=0)
 
-frame_1 = Frame(window, background='white')
-frame_1.grid(row=0, column=2)
+clear_canvas_button = Button(buttons_frame, text="Clear canvas")
+clear_canvas_button.grid(row=3, column=0)
 
-clear_canvas_button = Button(frame_1, text="Clear canvas", background="Red")
-clear_canvas_button.grid(row=3, column=2)
 """
 Debug
 """
-debug_frame = Frame(frame_1, background="blue")
-debug_frame.grid(row=4, column=2)
-debug_button = Button(debug_frame, text="Debug", background="Red")
-debug_button.grid(row=0, column=0)
+debug_frame = Frame(buttons_frame)
+debug_frame.grid(row=4, column=0)
+
+debug_button = Button(debug_frame, text="Debug")
+debug_button.grid(row=0, column=1)
 
 """
 action radiobutton frame
@@ -44,21 +50,25 @@ action radiobutton frame
 
 selected_option = StringVar(value="line")
 
-radiobutton_frame = Frame(frame_1)
-radiobutton_frame.grid(row=1, column=2)
+radiobutton_frame = Frame(buttons_frame)
+radiobutton_frame.grid(row=1, column=0)
 
 line_radiobutton = Radiobutton(radiobutton_frame, variable=selected_option, text="Line", value="line")
-# circle_radiobutton = Radiobutton(radiobutton_frame, variable=selected_option, text="Circle", value="circle")
+circle_radiobutton = Radiobutton(radiobutton_frame, variable=selected_option, text="Circle", value="circle")
+parabola_radiobutton = Radiobutton(radiobutton_frame, variable=selected_option, text="Parabola", value="parabola")
+hyperbola_radiobutton = Radiobutton(radiobutton_frame, variable=selected_option, text="Hyperbola", value="hyperbola")
 
-# circle_radiobutton.grid(row=0, column=1)
-line_radiobutton.grid(row=0, column=2)
+circle_radiobutton.grid(row=0, column=0)
+line_radiobutton.grid(row=1, column=0)
+parabola_radiobutton.grid(row=2, column=0)
+hyperbola_radiobutton.grid(row=3, column=0)
 
 """
 figure frame
 """
 
-figure_frame = Frame(frame_1)
-figure_frame.grid(row=2, column=2)
+figure_frame = Frame(buttons_frame)
+figure_frame.grid(row=2, column=0)
 
 """
 lines menu layout
@@ -78,16 +88,42 @@ line_box.grid()
 circles layout
 """
 
-# circle_frame = Frame(figure_frame, highlightbackground="black", highlightthickness=1)
-# circle_frame.grid(row=0, column=1, padx=2, pady=2)
-#
-# circle_label = Label(circle_frame, text="Circles", font='Arial')
-# circle_label.grid()
-#
-# circle_box = ttk.Combobox(circle_frame, values=algorithms, state="readonly")
-# circle_box.current(0)
-# circle_box.grid()
+circle_frame = Frame(figure_frame, highlightbackground="black", highlightthickness=1)
+circle_frame.grid(row=0, column=1, padx=2, pady=2)
 
+circle_label = Label(circle_frame, text="Ellipse", font='Arial')
+circle_label.grid()
+
+circle_box = ttk.Combobox(circle_frame, values=['Bresenham', 'Circle'], state="readonly")
+circle_box.current(0)
+circle_box.grid()
+
+"""
+parabola layout
+"""
+
+parabola_frame = Frame(figure_frame, highlightbackground="black", highlightthickness=1)
+parabola_frame.grid(row=1, column=0, padx=2, pady=2)
+
+parabola_label = Label(parabola_frame, text="Parabola", font='Arial')
+parabola_label.grid()
+
+parabola_box = ttk.Combobox(parabola_frame, values=['Bresenham'], state="readonly")
+parabola_box.current(0)
+parabola_box.grid()
+
+"""
+hyperbola layout
+"""
+hyperbola_frame = Frame(figure_frame, highlightbackground="black", highlightthickness=1)
+hyperbola_frame.grid(row=1, column=1, padx=2, pady=2)
+
+hyperbola_label = Label(hyperbola_frame, text="Hyperbola", font='Arial')
+hyperbola_label.grid()
+
+hyperbola_box = ttk.Combobox(hyperbola_frame, values=['Bresenham'], state="readonly")
+hyperbola_box.current(0)
+hyperbola_box.grid()
 
 """
 events
@@ -97,61 +133,93 @@ draw = list()
 
 
 def figure_click(event):
-    """
-    Click to draw line.
-    """
+    logger.debug(f"radio button option: {selected_option.get()}")
+    logger.debug(event)
     if len(draw) == 2:
         draw.clear()
 
-    logger.debug(f"radio button option: {selected_option.get()}; line algorithm: {line_box.get()}")
-    logger.debug(event)
+    draw.append(event)
+    if len(draw) == 1:
+        return
+    if selected_option.get() == 'line':
+        logger.debug(f"line algorithm {line_box.get()}")
+        line_click(event)
+    elif selected_option.get() == 'circle':
+        logger.debug(f"line algorithm {circle_box.get()}")
+        circle_click(event)
+    elif selected_option.get() == 'parabola':
+        parabola_click(event)
+    elif selected_option.get() == 'hyperbola':
+        hyperbola_click(event)
 
-    if len(draw) == 0:
-        draw.append(event)
+
+def hyperbola_click(event):
+    pixels = draw_hyperbola(draw[0], draw[1])
+
+    for i in pixels:
+        canvas.create_rectangle(i[0], i[1], i[0] + 1, i[1] + 1, fill="black")
+
+
+def parabola_click(event):
+    pixels = plot_parabola(draw[0], draw[1])
+
+    for i in pixels:
+        canvas.create_rectangle(i[0], i[1], i[0] + 1, i[1] + 1, fill="black")
+
+
+def circle_click(event):
+    if circle_box.get() == 'Circle':
+        pixels = EBresenham(draw[0], draw[1], circle=True)
     else:
-        if draw[0].x == event.x and draw[0].y == event.y:
-            return
+        pixels = EBresenham(draw[0], draw[1])
 
-        draw.append(event)
-        points = list()
-        if line_box.get() == "DDA":
-            points = DDA.DDA(draw[0], draw[1])
-        elif line_box.get() == "Bresenham":
-            points = Bresenham.Bresenham(draw[0], draw[1])
+    for i in pixels:
+        canvas.create_rectangle(i[0], i[1], i[0] + 1, i[1] + 1, fill="black")
 
-        for i in points:
-            canvas.create_rectangle(i[0], i[1], i[0] + 1, i[1] + 1, fill="black")
 
-        if line_box.get() == "Wu's line algorithm":
-            points, additional, change_flag = Wu.Wu(draw[0], draw[1])
-            s1 = 1 if points[-1][0] > points[0][0] else -1
-            s2 = 1 if points[-1][1] > points[0][1] else -1
+def line_click(event):
+    """
+    Click to draw line.
+    """
 
-            k = (points[-1][1] - points[0][1]) / (points[-1][0] - points[0][0])
-            b = points[-1][1] - points[-1][0] * k
-            for i in range(len(points)):
-                if change_flag:
-                    additional[i] = (
-                        additional[i][0] - 10 * s1, additional[i][1], abs(points[i][0] * k + b - points[i][1]))
-                else:
-                    additional[i] = (
-                        additional[i][0], additional[i][1] - 10 * s2, abs(points[i][0] * k + b - points[i][1]))
+    points = list()
+    if line_box.get() == "DDA":
+        points = DDA.DDA(draw[0], draw[1])
+    elif line_box.get() == "Bresenham":
+        points = Bresenham.Bresenham(draw[0], draw[1])
 
-            for i in range(len(points)):
-                color_1 = "#%02x%02x%02x" % (
-                    abs(int(255 * additional[i][2])), abs(int(255 * additional[i][2])),
-                    abs(int(255 * additional[i][2])))
+    for i in points:
+        canvas.create_rectangle(i[0], i[1], i[0] + 1, i[1] + 1, fill="black")
 
-                color_2 = "#%02x%02x%02x" % (
-                    abs(int(255 * (1 - additional[i][2]))), abs(int(255 * (1 - additional[i][2]))),
-                    abs(int(255 * (1 - additional[i][2]))))
+    if line_box.get() == "Wu's line algorithm":
+        points, additional, change_flag = Wu.Wu(draw[0], draw[1])
+        s1 = 1 if points[-1][0] > points[0][0] else -1
+        s2 = 1 if points[-1][1] > points[0][1] else -1
 
-                print("color ", color_1, len(color_1))
-                canvas.create_rectangle(points[i][0], points[i][1], points[i][0] + 1, points[i][1] + 1, fill=color_1)
-                canvas.create_rectangle(additional[i][0], additional[i][1], additional[i][0] + 1, additional[i][1] + 1,
-                                        fill=color_2)
+        k = (points[-1][1] - points[0][1]) / (points[-1][0] - points[0][0])
+        b = points[-1][1] - points[-1][0] * k
+        for i in range(len(points)):
+            if change_flag:
+                additional[i] = (
+                    additional[i][0] - 10 * s1, additional[i][1], abs(points[i][0] * k + b - points[i][1]))
+            else:
+                additional[i] = (
+                    additional[i][0], additional[i][1] - 10 * s2, abs(points[i][0] * k + b - points[i][1]))
 
-        logger.debug("line is drown!")
+        for i in range(len(points)):
+            color_1 = "#%02x%02x%02x" % (
+                abs(int(255 * additional[i][2])), abs(int(255 * additional[i][2])),
+                abs(int(255 * additional[i][2])))
+
+            color_2 = "#%02x%02x%02x" % (
+                abs(int(255 * (1 - additional[i][2]))), abs(int(255 * (1 - additional[i][2]))),
+                abs(int(255 * (1 - additional[i][2]))))
+
+            canvas.create_rectangle(points[i][0], points[i][1], points[i][0] + 1, points[i][1] + 1, fill=color_1)
+            canvas.create_rectangle(additional[i][0], additional[i][1], additional[i][0] + 1, additional[i][1] + 1,
+                                    fill=color_2)
+
+    logger.debug("line is drown!")
 
 
 def clear_canvas(event):
@@ -163,18 +231,112 @@ def clear_canvas(event):
     canvas.delete("all")
 
 
+def choose_debug(event):
+    logger.debug(f"radio button option: {selected_option.get()}; line algorithm: {line_box.get()}")
+    logger.debug(event)
+
+    if selected_option.get() == 'line':
+        debug_line(event)
+    elif selected_option.get() == 'circle':
+        debug_circle(event)
+    elif selected_option.get() == 'parabola':
+        debug_parabola(event)
+    elif selected_option.get() == 'hyperbola':
+        debug_hyperbola(event)
+
+
+def debug_hyperbola(event):
+    if len(draw) != 2:
+        return
+    debug_window = Tk()
+    debug_window.title("Debug")
+    debug_window.geometry("1000x1000")
+
+    next_button = Button(debug_window, text="Next")
+    next_button.grid()
+
+    debug_canvas = Canvas(debug_window, width=1000, height=1000, background="white")
+    debug_canvas.grid()
+
+    pixels = []
+    pixels = draw_hyperbola(draw[0], draw[1])
+
+    def draw_point(event):
+        debug_canvas.create_rectangle(pixels[0][0], pixels[0][1], pixels[0][0], pixels[0][1],
+                                      fill='black')
+        logger.debug(f"{pixels[0][0]}, {pixels[0][1]}")
+        pixels.pop(0)
+        print(pixels)
+
+    next_button.bind("<Button-1>", draw_point)
+
+def debug_parabola(event):
+    if len(draw) != 2:
+        return
+    debug_window = Tk()
+    debug_window.title("Debug")
+    debug_window.geometry("1000x1000")
+
+    next_button = Button(debug_window, text="Next")
+    next_button.grid()
+
+    debug_canvas = Canvas(debug_window, width=1000, height=1000, background="white")
+    debug_canvas.grid()
+
+    pixels = []
+    pixels = plot_parabola(draw[0], draw[1])
+
+    def draw_point(event):
+        debug_canvas.create_rectangle(pixels[0][0], pixels[0][1], pixels[0][0], pixels[0][1],
+                                      fill='black')
+        logger.debug(f"{pixels[0][0]}, {pixels[0][1]}")
+        pixels.pop(0)
+        print(pixels)
+
+    next_button.bind("<Button-1>", draw_point)
+
+
+def debug_circle(event):
+    if len(draw) != 2:
+        return
+    debug_window = Tk()
+    debug_window.title("Debug")
+    debug_window.geometry("1000x1000")
+
+    next_button = Button(debug_window, text="Next")
+    next_button.grid()
+
+    debug_canvas = Canvas(debug_window, width=1000, height=1000, background="white")
+    debug_canvas.grid()
+
+    pixels = []
+    if circle_box.get() == 'Circle':
+        pixels = EBresenham(draw[0], draw[1], circle=True)
+    else:
+        pixels = EBresenham(draw[0], draw[1])
+
+    def draw_point(event):
+        debug_canvas.create_rectangle(pixels[0][0], pixels[0][1], pixels[0][0], pixels[0][1],
+                                      fill='black')
+        logger.debug(f"{pixels[0][0]}, {pixels[0][1]}")
+        pixels.pop(0)
+        print(pixels)
+
+    next_button.bind("<Button-1>", draw_point)
+
+
 def debug_line(event):
     if len(draw) != 2:
         return
 
     debug_window = Tk()
     debug_window.title("Debug")
-    debug_window.geometry("600x600")
+    debug_window.geometry("1000x1000")
 
     next_button = Button(debug_window, text="Next")
     next_button.grid()
 
-    debug_canvas = Canvas(debug_window, width=600, height=500, background="white")
+    debug_canvas = Canvas(debug_window, width=1000, height=1000, background="white")
     debug_canvas.grid()
 
     if line_box.get() == "DDA":
@@ -264,10 +426,11 @@ def debug_line(event):
                 abs(int(255 * (1 - additional[0][2]))), abs(int(255 * (1 - additional[0][2]))),
                 abs(int(255 * (1 - additional[0][2]))))
 
-            print("color ", color_1, len(color_1))
-            debug_canvas.create_rectangle(points[0][0], points[0][1], points[0][0] + 10, points[0][1] + 10, fill=color_1)
-            debug_canvas.create_rectangle(additional[0][0], additional[0][1], additional[0][0] + 10, additional[0][1] + 10,
-                                    fill=color_2)
+            debug_canvas.create_rectangle(points[0][0], points[0][1], points[0][0] + 10, points[0][1] + 10,
+                                          fill=color_1)
+            debug_canvas.create_rectangle(additional[0][0], additional[0][1], additional[0][0] + 10,
+                                          additional[0][1] + 10,
+                                          fill=color_2)
             points.pop(0)
             additional.pop(0)
 
@@ -280,6 +443,6 @@ event bindings
 canvas.bind("<Button-1>", figure_click)
 clear_canvas_button.bind("<Button-1>", clear_canvas)
 
-debug_button.bind("<Button-1>", debug_line)
+debug_button.bind("<Button-1>", choose_debug)
 
 window.mainloop()
