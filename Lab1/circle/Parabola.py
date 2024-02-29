@@ -1,4 +1,4 @@
-def plot_parabola(event_1, event_2):
+def parabola_draw(event_1, event_2):
 
     x1, y1 = event_1.x, event_1.y
     x2, y2 = event_2.x, event_2.y

@@ -1,4 +1,4 @@
-def EBresenham(event_1, event_2, circle=False):
+def Circle_Bresenham(event_1, event_2, circle=False):
     pixels = []
 
     rx = abs(event_1.x - event_2.x) // 2

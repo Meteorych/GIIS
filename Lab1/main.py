@@ -9,9 +9,9 @@ from lines import DDA
 from lines import Bresenham
 from lines import Wu
 
-from circle.EBresenham import EBresenham
-from circle.Hyperbola import draw_hyperbola
-from circle.Parabola import plot_parabola
+from circle.CircleBresenham import Circle_Bresenham
+from circle.Hyperbola import hyperbola_drawing
+from circle.Parabola import parabola_draw
 
 logger.add(sys.stderr, format="{time} {level} {message}", filter="my_module", level="INFO")
 logger.add("out.log")
@@ -88,10 +88,10 @@ line_box.grid()
 circles layout
 """
 
-circle_frame = Frame(figure_frame, highlightbackground="black", highlightthickness=1)
+circle_frame = Frame(figure_frame, highlightbackground="black", highlightthickness=1, background="green")
 circle_frame.grid(row=0, column=1, padx=2, pady=2)
 
-circle_label = Label(circle_frame, text="Ellipse", font='Arial')
+circle_label = Label(circle_frame, text="Ellipse", font='Arial', background="green")
 circle_label.grid()
 
 circle_box = ttk.Combobox(circle_frame, values=['Bresenham', 'Circle'], state="readonly")
@@ -102,10 +102,10 @@ circle_box.grid()
 parabola layout
 """
 
-parabola_frame = Frame(figure_frame, highlightbackground="black", highlightthickness=1)
+parabola_frame = Frame(figure_frame, highlightbackground="black", highlightthickness=1, background="green")
 parabola_frame.grid(row=1, column=0, padx=2, pady=2)
 
-parabola_label = Label(parabola_frame, text="Parabola", font='Arial')
+parabola_label = Label(parabola_frame, text="Parabola", font='Arial', background="green")
 parabola_label.grid()
 
 parabola_box = ttk.Combobox(parabola_frame, values=['Bresenham'], state="readonly")
@@ -154,14 +154,14 @@ def figure_click(event):
 
 
 def hyperbola_click(event):
-    pixels = draw_hyperbola(draw[0], draw[1])
+    pixels = hyperbola_drawing(draw[0], draw[1])
 
     for i in pixels:
         canvas.create_rectangle(i[0], i[1], i[0] + 1, i[1] + 1, fill="black")
 
 
 def parabola_click(event):
-    pixels = plot_parabola(draw[0], draw[1])
+    pixels = parabola_draw(draw[0], draw[1])
 
     for i in pixels:
         canvas.create_rectangle(i[0], i[1], i[0] + 1, i[1] + 1, fill="black")
@@ -169,9 +169,9 @@ def parabola_click(event):
 
 def circle_click(event):
     if circle_box.get() == 'Circle':
-        pixels = EBresenham(draw[0], draw[1], circle=True)
+        pixels = Circle_Bresenham(draw[0], draw[1], circle=True)
     else:
-        pixels = EBresenham(draw[0], draw[1])
+        pixels = Circle_Bresenham(draw[0], draw[1])
 
     for i in pixels:
         canvas.create_rectangle(i[0], i[1], i[0] + 1, i[1] + 1, fill="black")
@@ -259,7 +259,7 @@ def debug_hyperbola(event):
     debug_canvas.grid()
 
     pixels = []
-    pixels = draw_hyperbola(draw[0], draw[1])
+    pixels = hyperbola_drawing(draw[0], draw[1])
 
     def draw_point(event):
         debug_canvas.create_rectangle(pixels[0][0], pixels[0][1], pixels[0][0], pixels[0][1],
@@ -284,7 +284,7 @@ def debug_parabola(event):
     debug_canvas.grid()
 
     pixels = []
-    pixels = plot_parabola(draw[0], draw[1])
+    pixels = parabola_draw(draw[0], draw[1])
 
     def draw_point(event):
         debug_canvas.create_rectangle(pixels[0][0], pixels[0][1], pixels[0][0], pixels[0][1],
@@ -311,9 +311,9 @@ def debug_circle(event):
 
     pixels = []
     if circle_box.get() == 'Circle':
-        pixels = EBresenham(draw[0], draw[1], circle=True)
+        pixels = Circle_Bresenham(draw[0], draw[1], circle=True)
     else:
-        pixels = EBresenham(draw[0], draw[1])
+        pixels = Circle_Bresenham(draw[0], draw[1])
 
     def draw_point(event):
         debug_canvas.create_rectangle(pixels[0][0], pixels[0][1], pixels[0][0], pixels[0][1],

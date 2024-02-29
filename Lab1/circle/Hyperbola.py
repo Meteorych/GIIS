@@ -1,4 +1,4 @@
-def draw_hyperbola(event_1, event_2):
+def hyperbola_drawing(event_1, event_2):
     a = abs(event_2.x - event_1.x) // 2
     b = abs(event_2.y - event_1.y) // 2
     h = (event_1.x + event_2.x) // 2
