@@ -33,7 +33,30 @@ namespace Lab1_2
             {
                 _secondPoint = e.GetPosition(MainCanvas);
                 _pointCount = 0;
+
+                if (Eclipse.IsChecked == true)
+                {
+
+                }
+
+                else if (Circle.IsChecked == true)
+                {
+
+                }
+                else if (Parabola.IsChecked == true)
+                {
+
+                }
+                else if (Hyperbola.IsChecked == true)
+                {
+
+                }
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MainCanvas.Children.Clear();
         }
     }
 }
