@@ -4,7 +4,7 @@ namespace Lab1_2.Circle;
 
 public class ParabolaDrawing
 {
-    public List<Tuple<double, double>> Draw(Point event1, Point event2)
+    public List<Point> Draw(Point event1, Point event2)
     {
         var x1 = event1.X;
         var y1 = event1.Y;
@@ -36,17 +36,17 @@ public class ParabolaDrawing
         }
 
         Console.WriteLine(string.Join(", ", xValues));
-        var pixels = new List<Tuple<double, double>>();
+        var pixels = new List<Point>();
 
         if (x1 < x2)
         {
             var t = 0;
             for (var i = 0; i < xValues.Count; i++)
             {
-                pixels.Add(new Tuple<double, double>(xValues[i], yValues[i]));
+                pixels.Add(new Point(xValues[i], yValues[i]));
                 if (i > 0)
                 {
-                    pixels.Add(new Tuple<double, double>(xValues[i] - Math.Abs(xValues[0] - xValues[i]) - t, yValues[i]));
+                    pixels.Add(new Point(xValues[i] - Math.Abs(xValues[0] - xValues[i]) - t, yValues[i]));
                 }
                 t++;
             }
@@ -56,10 +56,10 @@ public class ParabolaDrawing
             var t = 0;
             for (var i = 0; i < xValues.Count; i++)
             {
-                pixels.Add(new Tuple<double, double>(xValues[i], yValues[i]));
+                pixels.Add(new Point(xValues[i], yValues[i]));
                 if (i > 0)
                 {
-                    pixels.Add(new Tuple<double, double>(xValues[^i] + 1 + Math.Abs(xValues[^1] - xValues[0]), yValues[i]));
+                    pixels.Add(new Point(xValues[^i] + 1 + Math.Abs(xValues[^1] - xValues[0]), yValues[i]));
                 }
                 t++;
             }
@@ -67,7 +67,7 @@ public class ParabolaDrawing
 
         foreach (var pixel in pixels)
         {
-            Console.WriteLine("(" + pixel.Item1 + ", " + pixel.Item2 + ")");
+            Console.WriteLine("(" + pixel.X + ", " + pixel.Y + ")");
         }
 
         return pixels;

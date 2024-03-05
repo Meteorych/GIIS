@@ -6,13 +6,13 @@
         xmlns:local="clr-namespace:Lab1_2"
         mc:Ignorable="d"
         Title="MainWindow" Height="455" Width="860"
-        Background="Gray">
+        Background="LightGray">
     <Grid>
         <Canvas Name ="MainCanvas" Margin="0,0,0,104" Background="White" MouseLeftButtonDown="Canvas_LeftButtonDown"/>
-        <Button HorizontalAlignment="Center" Margin="0,346,0,0" VerticalAlignment="Top" Height="46" Width="108" FontSize="14" Click="Button_Click">
+        <Button HorizontalAlignment="Center" Margin="0,371,0,0" VerticalAlignment="Top" Height="46" Width="108" FontSize="14" Click="Button_Click">
             <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="16" LineHeight="7" Width="72"><Run Text="Clear "/><LineBreak/><Run Text="Canvas"/><LineBreak/><Run/></TextBlock>
         </Button>
-        <Grid HorizontalAlignment="Left" Margin="252,346,0,0" VerticalAlignment="Top" Width="100
+        <Grid HorizontalAlignment="Left" Margin="252,376,0,0" VerticalAlignment="Top" Width="100
               " Height="45">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -23,13 +23,13 @@
             <RadioButton x:Name="Circle" GroupName="Figure" Content="Circle" Grid.Row="1" FontSize="16" />
 
         </Grid>
-        <Grid Margin="522,349,238,0" VerticalAlignment="Top" Width="100" Height="40">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <RadioButton x:Name="Parabola" GroupName="Figure" Content="Parabola" Grid.Row="0" Grid.Column="1" Width="260" FontSize="16" HorizontalAlignment="Center"/>
-            <RadioButton x:Name="Hyperbola" GroupName="Figure" Content="Hyperbola" Grid.Column="1" Width="260" FontSize="16" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.RowSpan="2"/>
+        <Grid Margin="532,376,207,0" VerticalAlignment="Top" Height="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <RadioButton x:Name="Parabola" GroupName="Figure" Content="Parabola" Grid.Row="0" Width="260" FontSize="16"/>
+            <RadioButton x:Name="Hyperbola" GroupName="Figure" Content="Hyperbola" Grid.Row="1" Width="260" FontSize="16"/>
         </Grid>
     </Grid>
 </Window>

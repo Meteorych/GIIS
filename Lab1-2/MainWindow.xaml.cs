@@ -1,62 +1,61 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Lab1_2
+namespace Lab1_2;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    private Point _firstPoint;
+    private Point _secondPoint;
+    private int _pointCount;
+
+    public MainWindow()
     {
-        private Point _firstPoint;
-        private Point _secondPoint;
-        private int _pointCount;
+        InitializeComponent();
+    }
 
-        public MainWindow()
+    private void Draw(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void Canvas_LeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (_pointCount == 0)
         {
-            InitializeComponent();
+            _firstPoint = e.GetPosition(MainCanvas);
+            _pointCount++;
         }
-
-        private void Draw(object sender, RoutedEventArgs e)
+        else
         {
+            _secondPoint = e.GetPosition(MainCanvas);
+            _pointCount = 0;
 
-        }
-
-        private void Canvas_LeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (_pointCount == 0)
+            if (Eclipse.IsChecked == true)
             {
-                _firstPoint = e.GetPosition(MainCanvas);
-                _pointCount++;
+
             }
-            else
+
+            else if (Circle.IsChecked == true)
             {
-                _secondPoint = e.GetPosition(MainCanvas);
-                _pointCount = 0;
 
-                if (Eclipse.IsChecked == true)
-                {
+            }
+            else if (Parabola.IsChecked == true)
+            {
 
-                }
+            }
+            else if (Hyperbola.IsChecked == true)
+            {
 
-                else if (Circle.IsChecked == true)
-                {
-
-                }
-                else if (Parabola.IsChecked == true)
-                {
-
-                }
-                else if (Hyperbola.IsChecked == true)
-                {
-
-                }
             }
         }
+    }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            MainCanvas.Children.Clear();
-        }
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        MainCanvas.Children.Clear();
     }
 }
