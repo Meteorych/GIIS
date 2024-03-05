@@ -11,7 +11,7 @@
         Background="LightGray">
     <Grid>
         <Canvas Name ="MainCanvas" Height="500" Width ="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}" Background="White" MouseLeftButtonDown="Canvas_LeftButtonDown" Margin="0,0,0,211"/>
-        <Button HorizontalAlignment="Center" Margin="0,512,0,0" VerticalAlignment="Top" Height="46" Width="108" FontSize="14" Click="Button_Click">
+        <Button HorizontalAlignment="Center" Margin="0,512,0,0" VerticalAlignment="Top" Height="46" Width="108" FontSize="14" Click="ClearCanvasButton_Click">
             <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="16" LineHeight="7" Width="72"><Run Text="Clear "/><LineBreak/><Run Text="Canvas"/><LineBreak/><Run/></TextBlock>
         </Button>
         <Grid HorizontalAlignment="Center" Margin="0,510,230,0" VerticalAlignment="Top" Width="100" Height="45">
@@ -32,5 +32,9 @@
             <RadioButton x:Name="ParabolaButton" GroupName="Figure" Content="Parabola" Grid.Row="0" Width="260" FontSize="16"/>
             <RadioButton x:Name="HyperbolaButton" GroupName="Figure" Content="Hyperbola" Grid.Row="1" Width="260" FontSize="16"/>
         </Grid>
+        <Button Name ="DebugModeButton"  HorizontalAlignment="Left" Margin="42,512,0,0" VerticalAlignment="Top" Height="46" Width="108
+                " Click="DebugMode_ButtonClick">
+            <TextBlock TextWrapping="Wrap" Text="Debug Mode" FontSize="16"/>
+        </Button>
     </Grid>
 </Window>
