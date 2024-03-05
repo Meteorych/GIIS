@@ -4,7 +4,7 @@ namespace Lab1_2.Circle;
 
 public class CircleBresenham
 {
-    public List<Point> Draw(Point event1, Point event2, bool circle = false)
+    public static List<Point> Draw(Point event1, Point event2, bool circle = false)
     {
         var points = new List<Point>();
 

@@ -2,9 +2,9 @@
 
 namespace Lab1_2.Circle;
 
-public class HyperbolaDrawing
+public class Hyperbola
 {
-    public List<Point> Draw(Point event1, Point event2)
+    public static List<Point> Draw(Point event1, Point event2)
     {
         var a = Math.Abs(event2.X - event1.X) / 2;
         var b = Math.Abs(event2.Y - event1.Y) / 2;

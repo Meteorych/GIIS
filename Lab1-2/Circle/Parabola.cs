@@ -2,9 +2,9 @@
 
 namespace Lab1_2.Circle;
 
-public class ParabolaDrawing
+public class Parabola
 {
-    public List<Point> Draw(Point event1, Point event2)
+    public static List<Point> Draw(Point event1, Point event2)
     {
         var x1 = event1.X;
         var y1 = event1.Y;
