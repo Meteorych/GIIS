@@ -35,7 +35,7 @@ public partial class MainWindow : Window
             _secondPoint = e.GetPosition(MainCanvas);
             _pointCount = 0;
 
-            if (Eclipse.IsChecked == true)
+            if (Ellipse.IsChecked == true)
             {
                 var points = CircleBresenham.Draw(_firstPoint, _secondPoint);
                 await DrawCircle(points);
@@ -125,7 +125,7 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// Method for drawing Circle and Eclipse
+    /// Method for drawing Circle and Ellipse
     /// </summary>
     /// <param name="points">List of points for drawing</param>
     /// <returns></returns>

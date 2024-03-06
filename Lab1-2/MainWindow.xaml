@@ -20,7 +20,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <RadioButton x:Name="Eclipse" GroupName="Figure" Content="Eclipse" IsChecked="True" Grid.Row="0" FontSize="16"  />
+            <RadioButton x:Name="Ellipse" GroupName="Figure" Content="Ellipse" IsChecked="True" Grid.Row="0" FontSize="16"  />
             <RadioButton x:Name="Circle" GroupName="Figure" Content="Circle" Grid.Row="1" FontSize="16" />
 
         </Grid>
