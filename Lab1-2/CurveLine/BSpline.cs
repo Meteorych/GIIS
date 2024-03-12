@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows;
 
 namespace Lab1_2.CurveLine
 {
     class BSpline
     {
+        public static List<Point> Draw(Point startPoint, Point finishPoint)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

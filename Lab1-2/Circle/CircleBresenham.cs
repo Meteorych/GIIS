@@ -4,14 +4,14 @@ namespace Lab1_2.Circle;
 
 public class CircleBresenham
 {
-    public static List<Point> Draw(Point event1, Point event2, bool circle = false)
+    public static List<Point> Draw(Point startPoint, Point endPoint, bool circle = false)
     {
         var points = new List<Point>();
 
-        var rx = Math.Abs(event1.X - event2.X) / 2;
-        var ry = Math.Abs(event1.Y - event2.Y) / 2;
-        var xc = Math.Min(event1.X, event2.X) + rx;
-        var yc = Math.Min(event1.Y, event2.Y) + ry;
+        var rx = Math.Abs(startPoint.X - endPoint.X) / 2;
+        var ry = Math.Abs(startPoint.Y - endPoint.Y) / 2;
+        var xc = Math.Min(startPoint.X, endPoint.X) + rx;
+        var yc = Math.Min(startPoint.Y, endPoint.Y) + ry;
 
         if (circle)
         {

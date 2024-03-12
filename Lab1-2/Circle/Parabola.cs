@@ -4,12 +4,12 @@ namespace Lab1_2.Circle;
 
 public class Parabola
 {
-    public static List<Point> Draw(Point event1, Point event2)
+    public static List<Point> Draw(Point startPoint, Point endPoint)
     {
-        var x1 = event1.X;
-        var y1 = event1.Y;
-        var x2 = event2.X;
-        var y2 = event2.Y;
+        var x1 = startPoint.X;
+        var y1 = startPoint.Y;
+        var x2 = endPoint.X;
+        var y2 = endPoint.Y;
 
         Console.WriteLine(x1 + " " + y1);
         Console.WriteLine(x2 + " " + y2);

@@ -4,12 +4,12 @@ namespace Lab1_2.Circle;
 
 public class Hyperbola
 {
-    public static List<Point> Draw(Point event1, Point event2)
+    public static List<Point> Draw(Point startPoint, Point finishPoint)
     {
-        var a = Math.Abs(event2.X - event1.X) / 2;
-        var b = Math.Abs(event2.Y - event1.Y) / 2;
-        var h = (event1.X + event2.X) / 2;
-        var k = (event1.Y + event2.Y) / 2;
+        var a = Math.Abs(finishPoint.X - startPoint.X) / 2;
+        var b = Math.Abs(finishPoint.Y - startPoint.Y) / 2;
+        var h = (startPoint.X + finishPoint.X) / 2;
+        var k = (startPoint.Y + finishPoint.Y) / 2;
         var x = 0;
         var y = b;
         var d = b * b - a * a * b + a * a / 4;
@@ -30,7 +30,7 @@ public class Hyperbola
                 y--;
             }
             points.Add(new Point(x + h, -y + k));
-            points.Add(new Point(-x + Math.Abs(event1.X - event2.X) + h, y - Math.Abs(event1.Y - event2.Y) + k));
+            points.Add(new Point(-x + Math.Abs(startPoint.X - finishPoint.X) + h, y - Math.Abs(startPoint.Y - finishPoint.Y) + k));
         }
 
         d = b * b * (x + 1) * (x + 1) + a * a * (y - 1) * (y - 1) - a * a * b * b;
@@ -49,7 +49,7 @@ public class Hyperbola
                 y--;
             }
             points.Add(new Point(x + h, -y + k));
-            points.Add(new Point(-x + Math.Abs(event1.X - event2.X) + h, y - Math.Abs(event1.Y - event2.Y) + k));
+            points.Add(new Point(-x + Math.Abs(startPoint.X - finishPoint.X) + h, y - Math.Abs(startPoint.Y - finishPoint.Y) + k));
         }
 
         return points;
