@@ -93,7 +93,7 @@ public partial class MainWindow : Window
             if (_debugMode)
             {
                 await Task.Delay(500); // Adjust delay time as needed
-            }
+             }
         }
 
         for (var index = 1; index < points.Count - 2; index += 2)

@@ -11,26 +11,37 @@
         Background="LightGray">
     <Grid>
         <Canvas Name ="MainCanvas" Height="500" Width ="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}" Background="White" MouseLeftButtonDown="Canvas_LeftButtonDown" Margin="0,0,0,211"/>
-        <Button HorizontalAlignment="Center" Margin="0,512,0,0" VerticalAlignment="Top" Height="46" Width="108" FontSize="14" Click="ClearCanvasButton_Click">
-            <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="16" LineHeight="7" Width="72"><Run Text="Clear "/><LineBreak/><Run Text="Canvas"/><LineBreak/><Run/></TextBlock>
-        </Button>
-        <Grid HorizontalAlignment="Center" Margin="0,510,230,0" VerticalAlignment="Top" Width="100" Height="45">
+        <Grid HorizontalAlignment="Left" Margin="450,510,0,0" VerticalAlignment="Top" Height="61">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
-            <RadioButton x:Name="Ellipse" GroupName="Figure" Content="Ellipse" IsChecked="True" Grid.Row="0" FontSize="16"  />
-            <RadioButton x:Name="Circle" GroupName="Figure" Content="Circle" Grid.Row="1" FontSize="16" />
-
+            <Button HorizontalAlignment="Left" Height="46" Width="108" FontSize="14" Click="ClearCanvasButton_Click" Margin="-10,-5,0,5">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="16" LineHeight="7" Width="72"><Run Text="Clear "/><LineBreak/><Run Text="Canvas"/><LineBreak/><Run/></TextBlock>
+            </Button>
+            <RadioButton x:Name="BSpline" GroupName="Figure" Content="B-Spline" Grid.Row="1" FontSize="16" Margin="0,0,0,-32"/>
         </Grid>
-        <Grid HorizontalAlignment ="Center" Margin="585,510,154,0" VerticalAlignment="Top" Height="40">
+        <Grid HorizontalAlignment="Left" Margin="312,510,0,0" VerticalAlignment="Top" Width="114" Height="59">
             <Grid.RowDefinitions>
+                <RowDefinition Height="6.24"/>
+                <RowDefinition Height="14.04"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <RadioButton x:Name="Ellipse" GroupName="Figure" Content="Ellipse" IsChecked="True" Grid.Row="0" FontSize="16" Grid.RowSpan="2"  />
+            <RadioButton x:Name="Circle" GroupName="Figure" Content="Circle" Grid.Row="1" FontSize="16" Margin="0,14,0,20" Grid.RowSpan="3" />
+            <RadioButton x:Name="CurveBezier" GroupName="Figure" Content="Curve:Bezier" Grid.Row="3" FontSize="16"/>
+        </Grid>
+        <Grid HorizontalAlignment ="Left" Margin="585,510,0,0" VerticalAlignment="Top" Height="61">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <RadioButton x:Name="ParabolaButton" GroupName="Figure" Content="Parabola" Grid.Row="0" Width="260" FontSize="16"/>
             <RadioButton x:Name="HyperbolaButton" GroupName="Figure" Content="Hyperbola" Grid.Row="1" Width="260" FontSize="16"/>
+            <RadioButton x:Name="CurveHermit" GroupName="Figure" Content="Curve:Hermit" Grid.Row="2" FontSize="16"/>
         </Grid>
         <Button Name ="DebugModeButton"  HorizontalAlignment="Left" Margin="42,512,0,0" VerticalAlignment="Top" Height="46" Width="108
                 " Click="DebugMode_ButtonClick">
