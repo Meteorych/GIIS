@@ -56,6 +56,18 @@ public partial class MainWindow : Window
                 var points = Hyperbola.Draw(_firstPoint, _secondPoint);
                 await DrawFigure(points);
             }
+            else if (CurveBezier.IsChecked == true)
+            {
+                throw new NotImplementedException();
+            }
+            else if (CurveHermit.IsChecked == true)
+            {
+                throw new NotImplementedException();
+            }
+            else if (BSpline.IsChecked == true)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 

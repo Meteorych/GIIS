@@ -4,7 +4,7 @@ namespace Lab1_2.CurveLine
 {
     class BSpline
     {
-        public static List<Point> Draw(Point startPoint, Point finishPoint)
+        public static List<Point> Draw(Point startPoint, Point finishPoint, Point startTangent, Point endTangent)
         {
             throw new NotImplementedException();
         }
