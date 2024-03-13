@@ -16,9 +16,11 @@ namespace Lab1_2.CurveLine
 
         public void Draw(Point startPoint, Point endPoint, Point startTangent, Point endTangent)
         {
-            var polyline = new Polyline();
-            polyline.Stroke = Brushes.Black;
-            polyline.StrokeThickness = 2;
+            var polyline = new Polyline
+            {
+                Stroke = Brushes.Black,
+                StrokeThickness = 2
+            };
 
             var points = new List<Point>();
             var step = 0.01;

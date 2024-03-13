@@ -16,21 +16,24 @@ namespace Lab1_2.CurveLine
 
         public void Draw(List<Point> controlPoints)
         {
-            int n = controlPoints.Count - 1;
-            double step = 0.01;
+            var n = controlPoints.Count - 1;
+            var step = 0.01;
 
-            Polyline polyline = new Polyline();
-            polyline.Stroke = Brushes.Black;
-            polyline.StrokeThickness = 2;
+            var polyline = new Polyline()
+            {
+                Stroke = Brushes.Black,
+                StrokeThickness = 2
+            };
+            
 
             for (double t = 2; t <= n; t += step)
             {
-                double x = 0.0;
-                double y = 0.0;
+                var x = 0.0;
+                var y = 0.0;
 
-                for (int i = 0; i <= n; i++)
+                for (var i = 0; i <= n; i++)
                 {
-                    double basis = BSplineBasis(i, 3, t);
+                    var basis = BSplineBasis(i, 3, t);
                     x += basis * controlPoints[i].X;
                     y += basis * controlPoints[i].Y;
                 }
