@@ -19,7 +19,7 @@
             <Button HorizontalAlignment="Left" Height="46" Width="108" FontSize="14" Click="ClearCanvasButton_Click" Margin="-10,-5,0,5">
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="16" LineHeight="7" Width="72"><Run Text="Clear "/><LineBreak/><Run Text="Canvas"/><LineBreak/><Run/></TextBlock>
             </Button>
-            <RadioButton x:Name="BSpline" GroupName="Figure" Content="B-Spline" Grid.Row="1" FontSize="16" Margin="0,0,0,-32"/>
+            <RadioButton x:Name="BSplineButton" GroupName="Figure" Content="B-Spline" Grid.Row="1" FontSize="16" Margin="0,0,0,-32"/>
         </Grid>
         <Grid HorizontalAlignment="Left" Margin="312,510,0,0" VerticalAlignment="Top" Width="114" Height="59">
             <Grid.RowDefinitions>

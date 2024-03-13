@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Lab1_2.Circle;
+using Lab1_2.CurveLine;
 using Point = System.Windows.Point;
 
 namespace Lab1_2;
@@ -10,6 +11,7 @@ namespace Lab1_2;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
+/// TODO: Architecture of this program is crippled shit...Too much ifs, no cohesion, absolutely no unity between different methods, absolutely no polymorphism
 public partial class MainWindow : Window
 {
     private Point _firstPoint;
@@ -58,15 +60,23 @@ public partial class MainWindow : Window
             }
             else if (CurveBezier.IsChecked == true)
             {
-                throw new NotImplementedException();
+                var bezierCurve = new BezierCurve(MainCanvas);
+                bezierCurve.Draw([
+                    _firstPoint, new Point(_firstPoint.X + 100, _secondPoint.Y + 100), _secondPoint,
+                    _secondPoint with { X = _secondPoint.X + 200 }
+                ]);
             }
             else if (CurveHermit.IsChecked == true)
             {
-                throw new NotImplementedException();
+                var hermitCurve = new HermitCurve(MainCanvas);
+                hermitCurve.Draw(_firstPoint, new Point(_firstPoint.X + 50, _firstPoint.Y + 100), _secondPoint with { X = _secondPoint.X -50, Y = _secondPoint.Y - 100 },
+                    _secondPoint);
             }
-            else if (BSpline.IsChecked == true)
+            else if (BSplineButton.IsChecked == true)
             {
-                throw new NotImplementedException();
+                var bSpline = new BSpline(MainCanvas);
+                bSpline.Draw([_firstPoint, new Point(_firstPoint.X + 50, _firstPoint.Y + 100), _secondPoint with { X = _secondPoint.X - 50, Y = _secondPoint.Y - 100 },
+                    _secondPoint]);
             }
         }
     }
@@ -105,7 +115,7 @@ public partial class MainWindow : Window
             if (_debugMode)
             {
                 await Task.Delay(500); // Adjust delay time as needed
-             }
+            }
         }
 
         for (var index = 1; index < points.Count - 2; index += 2)
@@ -171,8 +181,6 @@ public partial class MainWindow : Window
             }
 
             polylines.Add(polyline);
-
-            
         }
 
         if (!_debugMode)

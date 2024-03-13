@@ -1,12 +1,65 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Lab1_2.CurveLine
 {
     class BSpline
     {
-        public static List<Point> Draw(Point startPoint, Point finishPoint, Point startTangent, Point endTangent)
+        private readonly Canvas _canvas;
+        public BSpline(Canvas canvas)
         {
-            throw new NotImplementedException();
+            _canvas = canvas;
+        }
+
+        public void Draw(List<Point> controlPoints)
+        {
+            int n = controlPoints.Count - 1;
+            double step = 0.01;
+
+            Polyline polyline = new Polyline();
+            polyline.Stroke = Brushes.Black;
+            polyline.StrokeThickness = 2;
+
+            for (double t = 2; t <= n; t += step)
+            {
+                double x = 0.0;
+                double y = 0.0;
+
+                for (int i = 0; i <= n; i++)
+                {
+                    double basis = BSplineBasis(i, 3, t);
+                    x += basis * controlPoints[i].X;
+                    y += basis * controlPoints[i].Y;
+                }
+                if (x >= 0 && x <= _canvas.ActualWidth &&
+                y >= 0 && y <= _canvas.ActualHeight)
+                    polyline.Points.Add(new Point(x, y));
+            }
+
+            
+            _canvas.Children.Add(polyline);
+        }
+
+        private double BSplineBasis(int i, int k, double t)
+        {
+            if (k == 1)
+            {
+                if (i <= t && t < i + 1)
+                    return 1;
+                return 0;
+            }
+
+            double denominator1 = i + k - 1 - i;
+            double denominator2 = i + k - 1 - (i + k - 1 - 1);
+            double basis1 = 0, basis2 = 0;
+            if (denominator1 != 0)
+                basis1 = ((t - i) / denominator1) * BSplineBasis(i, k - 1, t);
+            if (denominator2 != 0)
+                basis2 = ((i + k - t) / denominator2) * BSplineBasis(i + 1, k - 1, t);
+            return basis1 + basis2;
         }
     }
 }
