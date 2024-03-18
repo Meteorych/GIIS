@@ -62,8 +62,8 @@ public partial class MainWindow : Window
             {
                 var bezierCurve = new BezierCurve(MainCanvas);
                 bezierCurve.Draw([
-                    _firstPoint, new Point(_firstPoint.X + 100, _secondPoint.Y + 100), _secondPoint,
-                    _secondPoint with { X = _secondPoint.X + 200 }
+                    _firstPoint, new Point(_firstPoint.X + 50, _firstPoint.Y - 200), _secondPoint,
+                    _secondPoint with { X = _secondPoint.X + 50, Y = _secondPoint.Y - 200 }
                 ]);
             }
             else if (CurveHermit.IsChecked == true)

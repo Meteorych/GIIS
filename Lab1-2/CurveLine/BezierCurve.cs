@@ -8,10 +8,12 @@ namespace Lab1_2.CurveLine
     class BezierCurve
     {
         private readonly Canvas _canvas;
+
         public BezierCurve(Canvas canvas)
         {
             _canvas = canvas;
         }
+
         public void Draw(List<Point> controlPoints)
         {
             const int n = 3;
