@@ -39,14 +39,14 @@ public partial class MainWindow : Window
 
             if (Ellipse.IsChecked == true)
             {
-                var points = CircleBresenham.Draw(_firstPoint, _secondPoint);
-                await DrawCircle(points);
+                var circleDrawing = new CircleBresenham(MainCanvas);
+                await circleDrawing.Draw(_firstPoint, _secondPoint, false, _debugMode);
             }
 
             else if (Circle.IsChecked == true)
             {
-                var points = CircleBresenham.Draw(_firstPoint, _secondPoint, true);
-                await DrawCircle(points);
+                var circleDrawing = new CircleBresenham(MainCanvas);
+                await circleDrawing.Draw(_firstPoint, _secondPoint, true, _debugMode);
             }
             else if (ParabolaButton.IsChecked == true)
             {
@@ -142,53 +142,6 @@ public partial class MainWindow : Window
             if (!MainCanvas.Children.Contains(polyline2))
             {
                 MainCanvas.Children.Add(polyline2);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Method for drawing Circle and Ellipse
-    /// </summary>
-    /// <param name="points">List of points for drawing</param>
-    /// <returns></returns>
-    private async Task DrawCircle(List<Point> points)
-    {
-        var polylines = new List<Polyline>();
-
-        for (var i = 0; i < 4; i++)
-        {
-            var polyline = new Polyline()
-            {
-                Stroke = Brushes.Black,
-                StrokeThickness = 1
-            };
-            if (_debugMode)
-            {
-                MainCanvas.Children.Add(polyline);
-            }
-            for (var index = i; index < points.Count; index += 4)
-            {
-                if (points[index].X >= 0 && points[index].X <= MainCanvas.ActualWidth &&
-                    points[index].Y >= 0 && points[index].Y <= MainCanvas.ActualHeight)
-                {
-                    polyline.Points.Add(points[index]);
-                    if (_debugMode)
-                    {
-                        await Task.Delay(500);// Adjust delay time as needed
-                    }
-                    
-                }
-            }
-
-            polylines.Add(polyline);
-        }
-
-        if (!_debugMode)
-        {
-            foreach (var polyline in polylines)
-            {
-                if (MainCanvas.Children.Contains(polyline)) continue;
-                MainCanvas.Children.Add(polyline);
             }
         }
     }

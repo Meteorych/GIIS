@@ -1,10 +1,70 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Lab1_2.Circle;
 
 public class CircleBresenham
 {
-    public static List<Point> Draw(Point startPoint, Point endPoint, bool circle = false)
+    private readonly Canvas _canvas;
+
+    public CircleBresenham(Canvas canvas)
+    {
+        _canvas = canvas;
+    }
+    /// <summary>
+    /// Method for drawing Circle or Ellipse.
+    /// </summary>
+    /// <param name="startPoint"></param>
+    /// <param name="endPoint"></param>
+    /// <param name="circle"></param>
+    /// <param name="mode"></param>
+    /// <returns></returns>
+    public async Task Draw(Point startPoint, Point endPoint, bool circle = false, bool mode = false)
+    {
+        var points = FindPoints(startPoint, endPoint, circle); 
+        var polylines = new List<Polyline>();
+        
+        for (var i = 0; i < 4; i++)
+        {
+            var polyline = new Polyline()
+            {
+                Stroke = Brushes.Black,
+                StrokeThickness = 1
+            };
+            if (mode)
+            {
+                _canvas.Children.Add(polyline);
+            }
+            for (var index = i; index < points.Count; index += 4)
+            {
+                if (points[index].X >= 0 && points[index].X <= _canvas.ActualWidth &&
+                    points[index].Y >= 0 && points[index].Y <= _canvas.ActualHeight)
+                {
+                    polyline.Points.Add(points[index]);
+                    if (mode)
+                    {
+                        await Task.Delay(500);// Adjust delay time as needed
+                    }
+
+                }
+            }
+
+            polylines.Add(polyline);
+        }
+
+        if (!mode)
+        {
+            foreach (var polyline in polylines)
+            {
+                if (_canvas.Children.Contains(polyline)) continue;
+                _canvas.Children.Add(polyline);
+            }
+        }
+    }
+
+    private static List<Point> FindPoints(Point startPoint, Point endPoint, bool circle = false)
     {
         var points = new List<Point>();
 
@@ -85,4 +145,5 @@ public class CircleBresenham
 
         return points;
     }
+
 }
