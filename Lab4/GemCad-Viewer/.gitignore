@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/GemCad_Viewer
+/ASC_3DViewer_WPF/bin/Debug
+/ASC_3DViewer_WPF/obj/x86/Release
+/ASC_3DViewer_WPF/obj/x86/Debug
+/ASC_3DViewer_WPF/Properties

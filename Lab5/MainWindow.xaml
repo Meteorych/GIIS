@@ -1,0 +1,33 @@
+﻿<Window x:Class="Lab5.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lab5"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="412" Width="800">
+    <Grid Background ="Gray">
+        <Canvas Background="White" Margin="0,0,0,105"/>
+        <Button Name="CheckPointButton" Margin="1,296,614,61" Click="CheckPointButton_Click">
+            <TextBlock TextWrapping="Wrap" Text="Check Point"/>
+        </Button>
+        <Button Name="CheckIntersectionButton" Margin="1,344,614,13" Click="CheckIntersectionButton_Click">
+            <TextBlock TextWrapping="Wrap" Text="Check Intersection"/>
+        </Button>
+        <Button Name ="CheckConvexityButton"  Margin="370,296,247,61" Click="CheckConvexityButton_Click" >
+            <TextBlock TextWrapping="Wrap" Text="Check Convexity"/>
+        </Button>
+        <Button Name ="CalculateNormalsButton"  Margin="370,344,247,13" Click="CalculateNormalsButton_Click" >
+            <TextBlock TextWrapping="Wrap" Text="Calculate Normals"/>
+        </Button>
+        <Button Name="GrahamsConvexHullButton" Margin="558,296,47,61" Click="GrahamsConvexHullButton_Click" >
+            <TextBlock TextWrapping="Wrap" Text="Graham's Convex Hull"/>
+        </Button>
+        <Button Name="JarvisConvexHullButton" Margin="558,344,47,13" Click="JarvisConvexHullButton_Click" >
+            <TextBlock TextWrapping="Wrap" Text="Jarvis Convex Hull"/>
+        </Button>
+        <TextBox Name="PointValueText" HorizontalAlignment="Left" Height="39" Margin="191,296,0,0" Background="White" TextWrapping="Wrap" VerticalAlignment="Top" Width="174" />
+        <TextBox Name ="IntersectionValueText" HorizontalAlignment="Left" Height="39" Margin="191,344,0,0" Background="White" TextWrapping="Wrap" VerticalAlignment="Top" Width="174" />
+
+    </Grid>
+</Window>
