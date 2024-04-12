@@ -92,12 +92,71 @@ namespace Lab5
 
         private void CalculateNormalsButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_points.Count < 3)
+            {
+                Console.WriteLine("At least 3 points are needed to form a polygon.");
+                return;
+            }
 
+            var normals = new List<Vector>();
+            var n = _points.Count;
+            for (var i = 0; i < n; i++)
+            {
+                var p1 = _points[i];
+                var p2 = _points[(i + 1) % n];
+                var normal = new Vector(p1.Y - p2.Y, p2.X - p1.X);
+                normals.Add(normal);
+            }
+
+            var normalsInfo = "The normals are:\n";
+            foreach (var normal in normals) 
+            {
+                normalsInfo += $"({Math.Round(normal.X, 2)}; {Math.Round(normal.Y, 2)})\n";
+            }
+
+            MessageBox.Show(normalsInfo);
         }
 
         private void GrahamsConvexHullButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_points.Count < 3)
+            {
+                Console.WriteLine("At least 3 points are needed to form a polygon.");
+                return;
+            }
+            var sortedPoints = _points.OrderBy(p => p.X).ThenBy(p => p.Y).ToList();
+            MainCanvas.Children.Clear();
+            var stack = new Stack<Point>();
 
+            foreach (var point in sortedPoints)
+            {
+                while (stack.Count >= 2 && Orientation(stack.ElementAt(stack.Count - 2), stack.Peek(), point) <= 0)
+                {
+                    stack.Pop();
+                }
+                stack.Push(point);
+            }
+
+            var convexHull = stack.ToList();
+            var polygon = new Polygon
+            {
+                Stroke = Brushes.Red,
+                StrokeThickness = 2,
+                Points = new PointCollection(convexHull)
+            };
+            MainCanvas.Children.Add(polygon);
+        }
+
+        private int Orientation(Point p, Point q, Point r)
+        {
+            var val = (q.Y - p.Y) * (r.X - q.X) - (q.X - p.X) * (r.Y - q.Y);
+
+            if (val == 0)
+            {
+                return 0;
+            }
+
+            return (val > 0) ? 1 : -1;
         }
 
         private void JarvisConvexHullButton_Click(object sender, RoutedEventArgs e)
