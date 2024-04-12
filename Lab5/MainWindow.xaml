@@ -5,29 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab5"
         mc:Ignorable="d"
-        Title="MainWindow" Height="412" Width="800">
-    <Grid Background ="Gray">
-        <Canvas Background="White" Margin="0,0,0,105"/>
-        <Button Name="CheckPointButton" Margin="1,296,614,61" Click="CheckPointButton_Click">
-            <TextBlock TextWrapping="Wrap" Text="Check Point"/>
-        </Button>
-        <Button Name="CheckIntersectionButton" Margin="1,344,614,13" Click="CheckIntersectionButton_Click">
-            <TextBlock TextWrapping="Wrap" Text="Check Intersection"/>
-        </Button>
-        <Button Name ="CheckConvexityButton"  Margin="370,296,247,61" Click="CheckConvexityButton_Click" >
-            <TextBlock TextWrapping="Wrap" Text="Check Convexity"/>
-        </Button>
-        <Button Name ="CalculateNormalsButton"  Margin="370,344,247,13" Click="CalculateNormalsButton_Click" >
-            <TextBlock TextWrapping="Wrap" Text="Calculate Normals"/>
-        </Button>
-        <Button Name="GrahamsConvexHullButton" Margin="558,296,47,61" Click="GrahamsConvexHullButton_Click" >
-            <TextBlock TextWrapping="Wrap" Text="Graham's Convex Hull"/>
-        </Button>
-        <Button Name="JarvisConvexHullButton" Margin="558,344,47,13" Click="JarvisConvexHullButton_Click" >
-            <TextBlock TextWrapping="Wrap" Text="Jarvis Convex Hull"/>
-        </Button>
-        <TextBox Name="PointValueText" HorizontalAlignment="Left" Height="39" Margin="191,296,0,0" Background="White" TextWrapping="Wrap" VerticalAlignment="Top" Width="174" />
-        <TextBox Name ="IntersectionValueText" HorizontalAlignment="Left" Height="39" Margin="191,344,0,0" Background="White" TextWrapping="Wrap" VerticalAlignment="Top" Width="174" />
+        Title="MainWindow" Height="540" Width="850">
+    <Grid Background ="Gray" Margin="0,0,-26,-31">
+        <Canvas Name ="MainCanvas" MouseLeftButtonDown ="MainCanvas_OnMouseLeftButtonDown" Height="350" Background="White" Margin="0,0,0,165"/>
+        <Grid HorizontalAlignment ="Left" Margin="14,380,0,55" Height="90" Width="770">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="45"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Row ="0" Grid.Column="0" Name="CheckPointButton" Click="CheckPointButton_Click">
+                <TextBlock TextWrapping="Wrap" Text="Check Point"/>
+            </Button>
+            <Button Grid.Row ="1" Grid.Column="0"  Name="CheckIntersectionButton" Click="CheckIntersectionButton_Click">
+                <TextBlock TextWrapping="Wrap" Text="Check Intersection"/>
+            </Button>
+            <Button Grid.Row ="0" Grid.Column ="2" Name ="CheckConvexityButton" Click="CheckConvexityButton_Click" >
+                <TextBlock TextWrapping="Wrap" Text="Check Convexity"/>
+            </Button>
+            <Button Grid.Row ="1" Grid.Column ="2" Name ="CalculateNormalsButton" Click="CalculateNormalsButton_Click" >
+                <TextBlock TextWrapping="Wrap" Text="Calculate Normals"/>
+            </Button>
+            <Button Grid.Row ="0" Grid.Column="3" Name="GrahamsConvexHullButton" Click="GrahamsConvexHullButton_Click" >
+                <TextBlock TextWrapping="Wrap" Text="Graham's Convex Hull"/>
+            </Button>
+            <Button Grid.Row ="1" Grid.Column ="3" Name="JarvisConvexHullButton" Click="JarvisConvexHullButton_Click" >
+                <TextBlock TextWrapping="Wrap" Text="Jarvis Convex Hull"/>
+            </Button>
+            <TextBox Grid.Row ="0" Grid.Column="1" Name="PointValueText" HorizontalAlignment="Center" Height="25" Background="White" TextWrapping="Wrap" VerticalAlignment="Top" Width="174" Margin="0,20,0,0" />
+            <TextBox Grid.Row ="1" Grid.Column="1" Name ="IntersectionValueText" HorizontalAlignment="Center" Height="25" Background="White" TextWrapping="Wrap" VerticalAlignment="Top" Width="174" Margin="0,20,0,0" />
+            <Button Grid.Row="0" Grid.Column ="4" Content="Clear" HorizontalAlignment="Center" Height="90" VerticalAlignment="Top" Width="149" Click="ClearButton_Click" Grid.RowSpan="2"/>
+        </Grid>
 
     </Grid>
 </Window>
