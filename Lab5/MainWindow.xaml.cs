@@ -52,8 +52,62 @@ namespace Lab5
 
         private void CheckPointButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_points.Count < 3)
+            {
+                MessageBox.Show("At least 3 points are needed to form a polygon.", "Warning");
+                return;
+            }
 
+            var pointString = PointValueText.Text;
+            var coordinates = pointString.Split(',');
+            if (coordinates.Length != 2)
+            {
+                MessageBox.Show("Invalid point coordinates format. Please enter as 'x, y'.", "Warning");
+                return;
+            }
+
+            if (PointInPolygon(new Point(double.Parse(coordinates.First()), double.Parse(coordinates.Last()))))
+            {
+                MessageBox.Show($"The point ({coordinates.First()}, {coordinates.Last()}) is inside the polygon.");
+            }
+            else
+            {
+                MessageBox.Show($"The point ({coordinates.First()}, {coordinates.Last()}) is outside the polygon.");
+            }
         }
+
+        private bool PointInPolygon(Point point)
+        {
+            var x = point.X;
+            var y = point.Y;
+            var n = _points.Count;
+            var inside = false;
+            var p1 = _points[0];
+            for (var i = 1; i <= n; i++)
+            {
+                var p2 = _points[i % n];
+                if (y > Math.Min(p1.Y, p2.Y))
+                {
+                    if (y <= Math.Max(p1.Y, p2.Y))
+                    {
+                        if (x <= Math.Max(p1.X, p2.X))
+                        {
+                            if (Math.Round(p1.Y, 2) != Math.Round(p2.Y, 2))
+                            {
+                                var xinters = (y - p1.Y) * (p2.X - p1.X) / (p2.Y - p1.Y) + p1.X;
+                                if (Math.Round(p1.X, 2) != Math.Round(p2.X, 2) || x <= xinters)
+                                {
+                                    inside = !inside;
+                                }
+                            }
+                        }
+                    }
+                }
+                p1 = p2;
+            }
+            return inside;
+        }
+        
 
         private void CheckIntersectionButton_Click(object sender, RoutedEventArgs e)
         {
