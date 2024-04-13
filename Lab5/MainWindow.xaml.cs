@@ -119,7 +119,7 @@ namespace Lab5
                 var intersections = LinePolygonIntersections(new Point(x1, y1), new Point(x2, y2));
                 if (intersections.Any())
                 {
-                    var intersectionPoints = string.Join(", ", intersections.Select(p => $"({p.X}, {p.Y})"));
+                    var intersectionPoints = string.Join(", ", intersections.Select(p => $"({Math.Round(p.X, 2)}, {Math.Round(p.Y, 2)})"));
                     MessageBox.Show($"The line intersects the polygon at {intersectionPoints}.", "Intersection Check", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -244,7 +244,7 @@ namespace Lab5
 
             foreach (var point in sortedPoints)
             {
-                while (stack.Count >= 2 && Orientation(stack.ElementAt(stack.Count - 2), stack.Peek(), point) <= 0)
+                while (stack.Count >= 3 && Orientation(stack.ElementAt(stack.Count - 2), stack.Peek(), point) <= 0)
                 {
                     stack.Pop();
                 }
