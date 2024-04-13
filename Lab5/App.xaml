@@ -10,6 +10,7 @@
                     <Setter Property="CornerRadius" Value="12" />
                 </Style>
             </Style.Resources>
+            <Setter Property="FontSize" Value="16"/>
         </Style>
     </Application.Resources>
 </Application>

@@ -1,12 +1,6 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Lab5
@@ -66,14 +60,10 @@ namespace Lab5
                 return;
             }
 
-            if (PointInPolygon(new Point(double.Parse(coordinates.First()), double.Parse(coordinates.Last()))))
-            {
-                MessageBox.Show($"The point ({coordinates.First()}, {coordinates.Last()}) is inside the polygon.");
-            }
-            else
-            {
-                MessageBox.Show($"The point ({coordinates.First()}, {coordinates.Last()}) is outside the polygon.");
-            }
+            MessageBox.Show(
+                PointInPolygon(new Point(double.Parse(coordinates.First()), double.Parse(coordinates.Last())))
+                    ? $"The point ({coordinates.First()}, {coordinates.Last()}) is inside the polygon."
+                    : $"The point ({coordinates.First()}, {coordinates.Last()}) is outside the polygon.");
         }
 
         private bool PointInPolygon(Point point)
@@ -115,7 +105,79 @@ namespace Lab5
             {
                 MessageBox.Show("At least 3 points are needed to form a polygon.", "Warning");
             }
+
+            var coordinates = IntersectionValueText.Text.Split(',');
+            if (coordinates.Length != 4)
+            {
+                MessageBox.Show("Invalid line coordinates format. Please enter as 'x1, y1, x2, y2'.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (double.TryParse(coordinates[0], out var x1) && double.TryParse(coordinates[1], out var y1) &&
+                double.TryParse(coordinates[2], out var x2) && double.TryParse(coordinates[3], out var y2))
+            {
+                var intersections = LinePolygonIntersections(new Point(x1, y1), new Point(x2, y2));
+                if (intersections.Any())
+                {
+                    var intersectionPoints = string.Join(", ", intersections.Select(p => $"({p.X}, {p.Y})"));
+                    MessageBox.Show($"The line intersects the polygon at {intersectionPoints}.", "Intersection Check", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("The line does not intersect the polygon.", "Intersection Check", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Invalid line coordinates format. Please enter as 'x1, y1, x2, y2'.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
+
+        private List<Point> LinePolygonIntersections(Point point1, Point point2)
+        {
+            var intersections = new List<Point>();
+            var n = _points.Count;
+            for (var i = 0; i < n; i++)
+            {
+                var p1 = _points[i];
+                var p2 = _points[(i + 1) % n];
+                var intersection = LineIntersection(point1, point2, p1, p2);
+                if (intersection.HasValue)
+                {
+                    intersections.Add(intersection.Value);
+                }
+            }
+            return intersections;
+        }
+
+        private Point? LineIntersection(Point point1, Point point2, Point point3, Point point4)
+        {
+            var x1 = point1.X;
+            var y1 = point1.Y;
+            var x2 = point2.X;
+            var y2 = point2.Y;
+            var x3 = point3.X;
+            var y3 = point3.Y;
+            var x4 = point4.X;
+            var y4 = point4.Y;
+
+            var denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+            if (denominator == 0)
+            {
+                return null;
+            }
+
+            var px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denominator;
+            var py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denominator;
+            if (Math.Min(x1, x2) <= px && px <= Math.Max(x1, x2) && Math.Min(y1, y2) <= py && py <= Math.Max(y1, y2) &&
+                Math.Min(x3, x4) <= px && px <= Math.Max(x3, x4) && Math.Min(y3, y4) <= py && py <= Math.Max(y3, y4))
+            {
+                return new Point(px, py);
+            }
+            return null;
+        }
+    
+
 
         private void CheckConvexityButton_Click(object sender, RoutedEventArgs e)
         {
@@ -134,11 +196,9 @@ namespace Lab5
                 var dx2 = _points[i].X - _points[(i + 1) % n].X;
                 var dy2 = _points[i].Y - _points[(i + 1) % n].Y;
                 var crossProduct = dx1 * dy2 - dy1 * dx2;
-                if (crossProduct < 0)
-                {
-                    isConvex = false;
-                    break;
-                }
+                if (!(crossProduct < 0)) continue;
+                isConvex = false;
+                break;
             }
 
             MessageBox.Show(isConvex ? "The polygon is convex." : "The polygon is not convex");
@@ -201,7 +261,7 @@ namespace Lab5
             MainCanvas.Children.Add(polygon);
         }
 
-        private int Orientation(Point p, Point q, Point r)
+        private static int Orientation(Point p, Point q, Point r)
         {
             var val = (q.Y - p.Y) * (r.X - q.X) - (q.X - p.X) * (r.Y - q.Y);
 
@@ -215,7 +275,41 @@ namespace Lab5
 
         private void JarvisConvexHullButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_points.Count < 3)
+            {
+                Console.WriteLine("At least 3 points are needed to form a polygon.");
+                return;
+            }
+            var hull = new List<Point>();
+            var startPoint = _points.OrderBy(p => p.X).ThenBy(p => p.Y).First();
+            var currentPoint = startPoint;
 
+            while (true)
+            {
+                hull.Add(currentPoint);
+                var endpoint = _points[0];
+                foreach (var point in _points)
+                {
+                    if (endpoint == currentPoint || Orientation(currentPoint, point, endpoint) == -1)
+                    {
+                        endpoint = point;
+                    }
+                }
+                currentPoint = endpoint;
+                if (currentPoint == startPoint)
+                {
+                    break;
+                }
+            }
+
+            MessageBox.Show("Convex hull found.", "Convex Hull", MessageBoxButton.OK, MessageBoxImage.Information);
+            var polygon = new Polygon
+            {
+                Stroke = Brushes.Green,
+                StrokeThickness = 2,
+                Points = new PointCollection(hull)
+            };
+            MainCanvas.Children.Add(polygon);
         }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
@@ -271,5 +365,6 @@ namespace Lab5
 
             return null;
         }
+
     }
 }
