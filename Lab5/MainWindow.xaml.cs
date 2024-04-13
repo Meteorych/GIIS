@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -10,7 +11,7 @@ namespace Lab5
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        private readonly int _gridSize = 2;
         private readonly List<Point> _points = [];
         private Polygon? _currentPolygon;
         public MainWindow()
@@ -20,6 +21,12 @@ namespace Lab5
 
         private void MainCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if ((FloodFillCheckBox.IsChecked ?? false) || (ScalineCheckBox.IsChecked ?? false))
+            {
+                FillPolygon();
+                return;
+            }
+            
             _points.Add(e.GetPosition(MainCanvas));
             var ellipse = new Ellipse
             {
@@ -28,7 +35,6 @@ namespace Lab5
                 Fill = Brushes.Black
             };
             MainCanvas.Children.Add(ellipse);
-
             if (_currentPolygon != null)
             {
                 MainCanvas.Children.Remove(_currentPolygon);
@@ -42,8 +48,114 @@ namespace Lab5
                 StrokeThickness = 2
             };
             MainCanvas.Children.Add(_currentPolygon);
+            
         }
 
+        private void FillPolygon()
+        {
+            if (_currentPolygon != null) _currentPolygon.Fill = Brushes.Black;
+        }
+
+        private void FloodFillPolygon(Point point)
+        {
+            var xCenter = (int)((point.X / _gridSize) * _gridSize) + (_gridSize / 2);
+            var yCenter = (int)((point.Y / _gridSize) * _gridSize) + (_gridSize / 2);
+
+            var stack = new Stack<Point>();
+            stack.Push(new Point(xCenter, yCenter));
+
+            var paintedPixels = new HashSet<Point>();
+
+            while (stack.Count > 0)
+            {
+                var currentPoint = stack.Pop();
+                var x = (int)currentPoint.X;
+                var y = (int)currentPoint.Y;
+
+                if (PointInPolygon(currentPoint) &&
+                    paintedPixels.Add(currentPoint))
+                {
+                    // Example: Fill a rectangle at the current point
+                    var rect = new Rectangle
+                    {
+                        Width = _gridSize,
+                        Height = _gridSize,
+                        Fill = Brushes.Black
+                    };
+                    Canvas.SetLeft(rect, x - _gridSize / 2);
+                    Canvas.SetTop(rect, y - _gridSize / 2);
+                    MainCanvas.Children.Add(rect);
+
+                    // Add adjacent points to the stack
+                    stack.Push(new Point(x + _gridSize, y));
+                    stack.Push(new Point(x - _gridSize, y));
+                    stack.Push(new Point(x, y + _gridSize));
+                    stack.Push(new Point(x, y - _gridSize));
+                }
+            }
+        }
+
+        private void ScalineFloodFill(Point point)
+        {
+            var xCenter = (int)((point.X / _gridSize) * _gridSize) + (_gridSize / 2);
+            var yCenter = (int)((point.Y / _gridSize) * _gridSize) + (_gridSize / 2);
+
+            var stack = new Stack<Point>();
+            stack.Push(new Point(xCenter, yCenter));
+
+            var paintedPixels = new HashSet<Point>();
+
+            while (stack.Count > 0)
+            {
+                var currentPoint = stack.Pop();
+                var x = (int)currentPoint.X;
+                var y = (int)currentPoint.Y;
+
+                if (x >= 0 && x < MainCanvas.ActualWidth && y >= 0 && y < MainCanvas.ActualHeight &&
+                    paintedPixels.Add(currentPoint))
+                {
+                    var left = x;
+                    var right = x;
+
+                    // Scan left
+                    while (left > 0 && !paintedPixels.Contains(new Point(left - _gridSize, y)))
+                    {
+                        left -= _gridSize;
+                    }
+
+                    // Scan right
+                    while (right < MainCanvas.ActualWidth - 1 && !paintedPixels.Contains(new Point(right + _gridSize, y)))
+                    {
+                        right += _gridSize;
+                    }
+
+                    // Fill the scanline
+                    for (var i = left; i <= right; i += _gridSize)
+                    {
+                        var rect = new Rectangle
+                        {
+                            Width = _gridSize,
+                            Height = _gridSize,
+                            Fill = Brushes.Black
+                        };
+                        Canvas.SetLeft(rect, x - _gridSize / 2);
+                        Canvas.SetTop(rect, y - _gridSize / 2);
+                        MainCanvas.Children.Add(rect);
+
+                        // Check for neighbors above and below
+                        if (y > 0 && !paintedPixels.Contains(new Point(i, y - _gridSize)))
+                        {
+                            stack.Push(new Point(i, y - _gridSize));
+                        }
+
+                        if (y < MainCanvas.ActualHeight - _gridSize && !paintedPixels.Contains(new Point(i, y + _gridSize)))
+                        {
+                            stack.Push(new Point(i, y + _gridSize));
+                        }
+                    }
+                }
+            }
+        }
         private void CheckPointButton_Click(object sender, RoutedEventArgs e)
         {
             if (_points.Count < 3)
