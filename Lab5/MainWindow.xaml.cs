@@ -23,18 +23,16 @@ namespace Lab5
         {
             if ((FloodFillCheckBox.IsChecked ?? false) || (ScalineCheckBox.IsChecked ?? false))
             {
+                MainCanvas.Children.Clear();
                 FillPolygon();
+                RasterScan(MainCanvas.Children.OfType<Polygon>().ElementAt(0));
                 return;
             }
 
             if (DrawEdgeRadioButton.IsChecked ?? false)
             {
                 if (!PointInPolygon(e.GetPosition(MainCanvas))) return;
-                var polygons = MainCanvas.Children.OfType<Polygon>().ToList();
-                foreach (var polygon in polygons)
-                {
-                    RasterScan(polygon);
-                }
+                RasterScan(MainCanvas.Children.OfType<Polygon>().ElementAt(0));
                 return;
             }
             
@@ -260,6 +258,9 @@ namespace Lab5
 
         private bool PointInPolygon(Point point)
         {
+            if (_points.Count < 3)
+                return false;
+
             var x = point.X;
             var y = point.Y;
             var n = _points.Count;

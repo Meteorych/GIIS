@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab5"
         mc:Ignorable="d"
-        Title="MainWindow" Height="570" Width="850">
+        Title="MainWindow" Height="570" Width="850" ResizeMode="NoResize">
     <Grid Background ="Gray" Margin="0,0,-26,-54">
         <Canvas Name ="MainCanvas" MouseLeftButtonDown ="MainCanvas_OnMouseLeftButtonDown" Background="White" Margin="0,0,0,196"/>
         <Grid HorizontalAlignment ="Left" Margin="14,380,0,55" Height="90" Width="770">
