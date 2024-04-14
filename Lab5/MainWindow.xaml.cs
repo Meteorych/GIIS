@@ -29,7 +29,7 @@ namespace Lab5
                 return;
             }
 
-            if (DrawEdgeRadioButton.IsChecked ?? false)
+            if ((DrawEdgeRadioButton.IsChecked ?? false) || (DrawActiveEdgeRadioButton.IsChecked ?? false))
             {
                 if (!PointInPolygon(e.GetPosition(MainCanvas))) return;
                 RasterScan(MainCanvas.Children.OfType<Polygon>().ElementAt(0));
@@ -110,26 +110,6 @@ namespace Lab5
                 MainCanvas.Children.Add(rect);
             }
         }
-
-
-
-
-        private void PaintPixel(Point point)
-        {
-            // Создаем прямоугольник с размерами одного пикселя и устанавливаем его расположение
-            var rect = new Rectangle
-            {
-                Width = 5,
-                Height = 5,
-                Fill = Brushes.Black
-            };
-            Canvas.SetLeft(rect, point.X);
-            Canvas.SetTop(rect, point.Y);
-
-            // Добавляем прямоугольник на холст
-            MainCanvas.Children.Add(rect);
-        }
-
 
         private void FillPolygon()
         {
