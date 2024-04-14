@@ -23,9 +23,8 @@ namespace Lab5
         {
             if ((FloodFillCheckBox.IsChecked ?? false) || (ScalineCheckBox.IsChecked ?? false))
             {
-                MainCanvas.Children.Clear();
+                //RasterScan(MainCanvas.Children.OfType<Polygon>().ElementAt(0));
                 FillPolygon();
-                RasterScan(MainCanvas.Children.OfType<Polygon>().ElementAt(0));
                 return;
             }
 
@@ -113,7 +112,10 @@ namespace Lab5
 
         private void FillPolygon()
         {
-            if (_currentPolygon != null) _currentPolygon.Fill = Brushes.Black;
+            if (_currentPolygon == null) return;
+            _currentPolygon.Fill = Brushes.Black;
+            _currentPolygon.Stroke = Brushes.Transparent;
+
         }
 
         private void FloodFillPolygon(Point point)

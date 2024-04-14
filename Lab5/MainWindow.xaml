@@ -44,7 +44,7 @@
         </Grid>
         <StackPanel Margin="14,512,92,48" Orientation="Horizontal">
             <RadioButton GroupName="RadioButtons" x:Name="FloodFillCheckBox" Content="Flood fill" FontSize="16" Margin="0,0,15,0"/>
-            <RadioButton GroupName="RadioButtons" x:Name="ScalineCheckBox" Content="Scaline check box" FontSize="16" Margin="0,0,15,0"/>
+            <RadioButton GroupName="RadioButtons" x:Name="ScalineCheckBox" Content="Scaline flood fill" FontSize="16" Margin="0,0,15,0"/>
             <RadioButton GroupName="RadioButtons" Content="Raster Scan" x:Name="DrawEdgeRadioButton" FontSize="16" Margin="0,0,15,0"/>
             <RadioButton GroupName="RadioButtons" x:Name="DrawActiveEdgeRadioButton"  Content ="Raster scan using Active Edges" FontSize="16" Margin="0,0,15,0"/>
             <RadioButton GroupName="RadioButtons" Content="No fill" FontSize="16" />
