@@ -43,9 +43,10 @@
             <Button Grid.Row="0" Grid.Column ="4" Content="Clear" HorizontalAlignment="Center" Height="90" VerticalAlignment="Top" Width="149" Click="ClearButton_Click" Grid.RowSpan="2"/>
         </Grid>
         <StackPanel Margin="14,512,92,48" Orientation="Horizontal">
-            <RadioButton GroupName="Fill" x:Name="FloodFillCheckBox" Content="Flood fill" FontSize="16" Margin="0,0,15,0"/>
-            <RadioButton GroupName="Fill" x:Name="ScalineCheckBox" Content="Scaline check box" FontSize="16" Margin="0,0,15,0"/>
-            <RadioButton Content="No fill" FontSize="16"/>
+            <RadioButton GroupName="RadioButtons" x:Name="FloodFillCheckBox" Content="Flood fill" FontSize="16" Margin="0,0,15,0"/>
+            <RadioButton GroupName="RadioButtons" x:Name="ScalineCheckBox" Content="Scaline check box" FontSize="16" Margin="0,0,15,0"/>
+            <RadioButton GroupName="RadioButtons" Content="No fill" FontSize="16" Margin="0,0,15,0"/>
+            <RadioButton GroupName="RadioButtons" Content="Draw edge" x:Name="DrawEdgeRadioButton" FontSize="16"/>
         </StackPanel>
 
     </Grid>

@@ -11,7 +11,7 @@ namespace Lab5
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly int _gridSize = 2;
+        private const int GridSize = 2;
         private readonly List<Point> _points = [];
         private Polygon? _currentPolygon;
         public MainWindow()
@@ -24,6 +24,17 @@ namespace Lab5
             if ((FloodFillCheckBox.IsChecked ?? false) || (ScalineCheckBox.IsChecked ?? false))
             {
                 FillPolygon();
+                return;
+            }
+
+            if (DrawEdgeRadioButton.IsChecked ?? false)
+            {
+                if (!PointInPolygon(e.GetPosition(MainCanvas))) return;
+                var polygons = MainCanvas.Children.OfType<Polygon>().ToList();
+                foreach (var polygon in polygons)
+                {
+                    RasterScan(polygon);
+                }
                 return;
             }
             
@@ -51,6 +62,77 @@ namespace Lab5
             
         }
 
+        private void RasterScan(Polygon polygon)
+        {
+            if (_points.Count < 3)
+            {
+                MessageBox.Show("At least 3 points are needed to form a polygon.", "Warning");
+                return;
+            }
+
+            // Iterate through each edge of the polygon
+            for (var i = 0; i < polygon.Points.Count; i++)
+            {
+                var p1 = polygon.Points[i];
+                var p2 = polygon.Points[(i + 1) % polygon.Points.Count];
+
+                // Draw rectangles along the line between p1 and p2
+                DrawLineWithRectangles(p1, p2);
+            }
+        }
+
+        private void DrawLineWithRectangles(Point p1, Point p2)
+        {
+            // Calculate the length of the line segment
+            var dx = p2.X - p1.X;
+            var dy = p2.Y - p1.Y;
+            var length = Math.Sqrt(dx * dx + dy * dy);
+
+            // Calculate the number of rectangles needed
+            var numRectangles = (int)Math.Ceiling(length / (GridSize*2.5));
+
+            // Calculate the increment for each rectangle
+            var xIncrement = dx / numRectangles;
+            var yIncrement = dy / numRectangles;
+
+            // Draw rectangles for each segment of the line
+            for (var i = 0; i < numRectangles; i++)
+            {
+                var x = p1.X + i * xIncrement;
+                var y = p1.Y + i * yIncrement;
+
+                var rect = new Rectangle
+                {
+                    Width = 5,
+                    Height = 5,
+                    Fill = Brushes.Black
+                };
+                Canvas.SetLeft(rect, x);
+                Canvas.SetTop(rect, y);
+                MainCanvas.Children.Add(rect);
+            }
+        }
+
+
+
+
+        private void PaintPixel(Point point)
+        {
+            // Создаем прямоугольник с размерами одного пикселя и устанавливаем его расположение
+            var rect = new Rectangle
+            {
+                Width = 5,
+                Height = 5,
+                Fill = Brushes.Black
+            };
+            Canvas.SetLeft(rect, point.X);
+            Canvas.SetTop(rect, point.Y);
+
+            // Добавляем прямоугольник на холст
+            MainCanvas.Children.Add(rect);
+        }
+
+
         private void FillPolygon()
         {
             if (_currentPolygon != null) _currentPolygon.Fill = Brushes.Black;
@@ -58,8 +140,8 @@ namespace Lab5
 
         private void FloodFillPolygon(Point point)
         {
-            var xCenter = (int)((point.X / _gridSize) * _gridSize) + (_gridSize / 2);
-            var yCenter = (int)((point.Y / _gridSize) * _gridSize) + (_gridSize / 2);
+            var xCenter = (int)((point.X / GridSize) * GridSize) + (GridSize / 2);
+            var yCenter = (int)((point.Y / GridSize) * GridSize) + (GridSize / 2);
 
             var stack = new Stack<Point>();
             stack.Push(new Point(xCenter, yCenter));
@@ -72,33 +154,31 @@ namespace Lab5
                 var x = (int)currentPoint.X;
                 var y = (int)currentPoint.Y;
 
-                if (PointInPolygon(currentPoint) &&
-                    paintedPixels.Add(currentPoint))
+                if (!PointInPolygon(currentPoint) ||
+                    !paintedPixels.Add(currentPoint)) continue;
+                // Example: Fill a rectangle at the current point
+                var rect = new Rectangle
                 {
-                    // Example: Fill a rectangle at the current point
-                    var rect = new Rectangle
-                    {
-                        Width = _gridSize,
-                        Height = _gridSize,
-                        Fill = Brushes.Black
-                    };
-                    Canvas.SetLeft(rect, x - _gridSize / 2);
-                    Canvas.SetTop(rect, y - _gridSize / 2);
-                    MainCanvas.Children.Add(rect);
+                    Width = GridSize,
+                    Height = GridSize,
+                    Fill = Brushes.Black
+                };
+                Canvas.SetLeft(rect, x - GridSize / 2);
+                Canvas.SetTop(rect, y - GridSize / 2);
+                MainCanvas.Children.Add(rect);
 
-                    // Add adjacent points to the stack
-                    stack.Push(new Point(x + _gridSize, y));
-                    stack.Push(new Point(x - _gridSize, y));
-                    stack.Push(new Point(x, y + _gridSize));
-                    stack.Push(new Point(x, y - _gridSize));
-                }
+                // Add adjacent points to the stack
+                stack.Push(new Point(x + GridSize, y));
+                stack.Push(new Point(x - GridSize, y));
+                stack.Push(new Point(x, y + GridSize));
+                stack.Push(new Point(x, y - GridSize));
             }
         }
 
         private void ScalineFloodFill(Point point)
         {
-            var xCenter = (int)((point.X / _gridSize) * _gridSize) + (_gridSize / 2);
-            var yCenter = (int)((point.Y / _gridSize) * _gridSize) + (_gridSize / 2);
+            var xCenter = (int)((point.X / GridSize) * GridSize) + (GridSize / 2);
+            var yCenter = (int)((point.Y / GridSize) * GridSize) + (GridSize / 2);
 
             var stack = new Stack<Point>();
             stack.Push(new Point(xCenter, yCenter));
@@ -118,39 +198,39 @@ namespace Lab5
                     var right = x;
 
                     // Scan left
-                    while (left > 0 && !paintedPixels.Contains(new Point(left - _gridSize, y)))
+                    while (left > 0 && !paintedPixels.Contains(new Point(left - GridSize, y)))
                     {
-                        left -= _gridSize;
+                        left -= GridSize;
                     }
 
                     // Scan right
-                    while (right < MainCanvas.ActualWidth - 1 && !paintedPixels.Contains(new Point(right + _gridSize, y)))
+                    while (right < MainCanvas.ActualWidth - 1 && !paintedPixels.Contains(new Point(right + GridSize, y)))
                     {
-                        right += _gridSize;
+                        right += GridSize;
                     }
 
                     // Fill the scanline
-                    for (var i = left; i <= right; i += _gridSize)
+                    for (var i = left; i <= right; i += GridSize)
                     {
                         var rect = new Rectangle
                         {
-                            Width = _gridSize,
-                            Height = _gridSize,
+                            Width = GridSize,
+                            Height = GridSize,
                             Fill = Brushes.Black
                         };
-                        Canvas.SetLeft(rect, x - _gridSize / 2);
-                        Canvas.SetTop(rect, y - _gridSize / 2);
+                        Canvas.SetLeft(rect, x - GridSize / 2);
+                        Canvas.SetTop(rect, y - GridSize / 2);
                         MainCanvas.Children.Add(rect);
 
                         // Check for neighbors above and below
-                        if (y > 0 && !paintedPixels.Contains(new Point(i, y - _gridSize)))
+                        if (y > 0 && !paintedPixels.Contains(new Point(i, y - GridSize)))
                         {
-                            stack.Push(new Point(i, y - _gridSize));
+                            stack.Push(new Point(i, y - GridSize));
                         }
 
-                        if (y < MainCanvas.ActualHeight - _gridSize && !paintedPixels.Contains(new Point(i, y + _gridSize)))
+                        if (y < MainCanvas.ActualHeight - GridSize && !paintedPixels.Contains(new Point(i, y + GridSize)))
                         {
-                            stack.Push(new Point(i, y + _gridSize));
+                            stack.Push(new Point(i, y + GridSize));
                         }
                     }
                 }
