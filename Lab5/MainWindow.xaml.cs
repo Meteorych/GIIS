@@ -118,104 +118,7 @@ namespace Lab5
 
         }
 
-        private void FloodFillPolygon(Point point)
-        {
-            var xCenter = (int)((point.X / GridSize) * GridSize) + (GridSize / 2);
-            var yCenter = (int)((point.Y / GridSize) * GridSize) + (GridSize / 2);
-
-            var stack = new Stack<Point>();
-            stack.Push(new Point(xCenter, yCenter));
-
-            var paintedPixels = new HashSet<Point>();
-
-            while (stack.Count > 0)
-            {
-                var currentPoint = stack.Pop();
-                var x = (int)currentPoint.X;
-                var y = (int)currentPoint.Y;
-
-                if (!PointInPolygon(currentPoint) ||
-                    !paintedPixels.Add(currentPoint)) continue;
-                // Example: Fill a rectangle at the current point
-                var rect = new Rectangle
-                {
-                    Width = GridSize,
-                    Height = GridSize,
-                    Fill = Brushes.Black
-                };
-                Canvas.SetLeft(rect, x - GridSize / 2);
-                Canvas.SetTop(rect, y - GridSize / 2);
-                MainCanvas.Children.Add(rect);
-
-                // Add adjacent points to the stack
-                stack.Push(new Point(x + GridSize, y));
-                stack.Push(new Point(x - GridSize, y));
-                stack.Push(new Point(x, y + GridSize));
-                stack.Push(new Point(x, y - GridSize));
-            }
-        }
-
-        private void ScalineFloodFill(Point point)
-        {
-            var xCenter = (int)((point.X / GridSize) * GridSize) + (GridSize / 2);
-            var yCenter = (int)((point.Y / GridSize) * GridSize) + (GridSize / 2);
-
-            var stack = new Stack<Point>();
-            stack.Push(new Point(xCenter, yCenter));
-
-            var paintedPixels = new HashSet<Point>();
-
-            while (stack.Count > 0)
-            {
-                var currentPoint = stack.Pop();
-                var x = (int)currentPoint.X;
-                var y = (int)currentPoint.Y;
-
-                if (x >= 0 && x < MainCanvas.ActualWidth && y >= 0 && y < MainCanvas.ActualHeight &&
-                    paintedPixels.Add(currentPoint))
-                {
-                    var left = x;
-                    var right = x;
-
-                    // Scan left
-                    while (left > 0 && !paintedPixels.Contains(new Point(left - GridSize, y)))
-                    {
-                        left -= GridSize;
-                    }
-
-                    // Scan right
-                    while (right < MainCanvas.ActualWidth - 1 && !paintedPixels.Contains(new Point(right + GridSize, y)))
-                    {
-                        right += GridSize;
-                    }
-
-                    // Fill the scanline
-                    for (var i = left; i <= right; i += GridSize)
-                    {
-                        var rect = new Rectangle
-                        {
-                            Width = GridSize,
-                            Height = GridSize,
-                            Fill = Brushes.Black
-                        };
-                        Canvas.SetLeft(rect, x - GridSize / 2);
-                        Canvas.SetTop(rect, y - GridSize / 2);
-                        MainCanvas.Children.Add(rect);
-
-                        // Check for neighbors above and below
-                        if (y > 0 && !paintedPixels.Contains(new Point(i, y - GridSize)))
-                        {
-                            stack.Push(new Point(i, y - GridSize));
-                        }
-
-                        if (y < MainCanvas.ActualHeight - GridSize && !paintedPixels.Contains(new Point(i, y + GridSize)))
-                        {
-                            stack.Push(new Point(i, y + GridSize));
-                        }
-                    }
-                }
-            }
-        }
+      
         private void CheckPointButton_Click(object sender, RoutedEventArgs e)
         {
             if (_points.Count < 3)
@@ -540,6 +443,9 @@ namespace Lab5
 
             return null;
         }
+
+
+
 
     }
 }
