@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab5"
         mc:Ignorable="d"
-        Title="MainWindow" Height="570" Width="850" ResizeMode="NoResize">
+        Title="MainWindow" Height="650" Width="850" ResizeMode="NoResize" PreviewKeyDown="MainWindow_KeyDown">
     <Grid Background ="Gray" Margin="0,0,-26,-54">
         <Canvas Name ="MainCanvas" MouseLeftButtonDown ="MainCanvas_OnMouseLeftButtonDown" Background="White" Margin="0,0,0,196"/>
-        <Grid HorizontalAlignment ="Left" Margin="14,380,0,55" Height="90" Width="770">
+        <Grid HorizontalAlignment ="Left" Margin="14,483,0,95" Height="90" Width="770">
             <Grid.RowDefinitions>
                 <RowDefinition Height="45"/>
                 <RowDefinition Height="45"/>
@@ -42,13 +42,18 @@
             <TextBox Grid.Row ="1" Grid.Column="1" FontSize="16" Name ="IntersectionValueText" HorizontalAlignment="Center" Height="25" Background="White" TextWrapping="Wrap" VerticalAlignment="Center" Width="174" />
             <Button Grid.Row="0" Grid.Column ="4" Content="Clear" HorizontalAlignment="Center" Height="90" VerticalAlignment="Top" Width="149" Click="ClearButton_Click" Grid.RowSpan="2"/>
         </Grid>
-        <StackPanel Margin="14,512,92,48" Orientation="Horizontal">
-            <RadioButton GroupName="RadioButtons" x:Name="FloodFillCheckBox" Content="Flood fill" FontSize="16" Margin="0,0,15,0"/>
-            <RadioButton GroupName="RadioButtons" x:Name="ScalineCheckBox" Content="Scaline flood fill" FontSize="16" Margin="0,0,15,0"/>
-            <RadioButton GroupName="RadioButtons" Content="Raster Scan" x:Name="DrawEdgeRadioButton" FontSize="16" Margin="0,0,15,0"/>
-            <RadioButton GroupName="RadioButtons" x:Name="DrawActiveEdgeRadioButton"  Content ="Raster scan using Active Edges" FontSize="16" Margin="0,0,15,0"/>
-            <RadioButton GroupName="RadioButtons" Content="No fill" FontSize="16" />
+        <StackPanel Margin="14,583,32,-23">
+            <StackPanel  Orientation="Horizontal">
+                <RadioButton GroupName="RadioButtons" x:Name="FloodFillCheckBox" Content="Flood fill" FontSize="16" Margin="0,0,15,0" />
+                <RadioButton GroupName="RadioButtons" x:Name="ScalineCheckBox" Content="Scaline flood fill" FontSize="16" Margin="0,0,15,0" />
+                <RadioButton GroupName="RadioButtons" Content="Raster Scan" x:Name="DrawEdgeRadioButton" FontSize="16" Margin="0,0,15,0"/>
+                <RadioButton GroupName="RadioButtons" x:Name="DrawActiveEdgeRadioButton"  Content ="Raster scan using Active Edges" FontSize="16" Margin="0,0,15,0"/>
+                <RadioButton GroupName="RadioButtons" x:Name ="DeloneTriangleRadioButton" Content ="DeloneTriangulation" FontSize="16" Margin="0,0,15,0"/>
+            </StackPanel>
+            <StackPanel  Orientation="Horizontal">
+                <RadioButton GroupName="RadioButtons" x:Name ="VoronoiDiagramRadioButton" Content = "VoronoiDiagram" FontSize="16" Margin="0,0,15,0"/>
+                <RadioButton GroupName="RadioButtons" Content="No fill" FontSize="16" />
+            </StackPanel>
         </StackPanel>
-
     </Grid>
 </Window>

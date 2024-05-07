@@ -18,6 +18,13 @@ namespace Lab5
         {
             InitializeComponent();
         }
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter && (DeloneTriangleRadioButton.IsChecked ?? false)) 
+            { 
+                DrawDeloneTriangulation();
+            }
+        }
 
         private void MainCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -27,7 +34,21 @@ namespace Lab5
                 FillPolygon();
                 return;
             }
+            if (DeloneTriangleRadioButton.IsChecked ?? false) 
+            {
+              
+                _points.Add(e.GetPosition(MainCanvas));  
+                MainCanvas.Children.Add(new Ellipse { Margin = new Thickness(
+                    e.GetPosition(MainCanvas).X, 
+                    e.GetPosition(MainCanvas).Y, 0, 0), 
+                    Width = 3, 
+                    Height = 3, 
+                    Fill = Brushes.Black
+                });
+                return;
+            }
 
+            
             if ((DrawEdgeRadioButton.IsChecked ?? false) || (DrawActiveEdgeRadioButton.IsChecked ?? false))
             {
                 if (!PointInPolygon(e.GetPosition(MainCanvas))) return;
@@ -36,13 +57,6 @@ namespace Lab5
             }
             
             _points.Add(e.GetPosition(MainCanvas));
-            var ellipse = new Ellipse
-            {
-                Width = 4,
-                Height = 4,
-                Fill = Brushes.Black
-            };
-            MainCanvas.Children.Add(ellipse);
             if (_currentPolygon != null)
             {
                 MainCanvas.Children.Remove(_currentPolygon);
@@ -444,8 +458,247 @@ namespace Lab5
             return null;
         }
 
+        private void DrawDeloneTriangulation()
+        {
+            bool InsideCircle(Point A, Point B, Point C, Point P)
+            {
+                double ax = A.X - P.X;
+                double ay = A.Y - P.Y;
+                double bx = B.X - P.X;
+                double by = B.Y - P.Y;
+                double cx = C.X - P.X;
+                double cy = C.Y - P.Y;
+
+                return (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by)) >= 1e-12;
+            }
+
+            double CrossProduct(Vector u, Vector v)
+            {
+                return u.X * v.Y - u.Y * v.X;
+            }
+
+            List<Tuple<int, int>> Triangulate(List<Point> points)
+            {
+                int n = points.Count;
+                List<Tuple<int, int>> edges = new List<Tuple<int, int>>();
+
+                var sortedPoints = points.OrderBy(p => p.X).ToList();
+
+                for (int i = 0; i < n; i++)
+                {
+                    while (edges.Count >= 2)
+                    {
+                        int j = edges.Count - 2;
+                        int k = edges.Count - 1;
+                        var A = sortedPoints[edges[j].Item1];
+                        var B = sortedPoints[edges[j].Item2];
+                        var C = sortedPoints[edges[k].Item2];
+
+                        if (CrossProduct(B - A, C - B) > 0)
+                        {
+                            break;
+                        }
+
+                        edges.RemoveAt(edges.Count - 1);
+                    }
+
+                    edges.Add(new Tuple<int, int>(edges.Count, i));
+                }
+
+                int lower = edges.Count;
+                int t = lower + 1;
+
+                for (int i = n - 2; i >= 0; i--)
+                {
+                    while (edges.Count >= t)
+                    {
+                        int j = edges.Count - 2;
+                        int k = edges.Count - 1;
+                        var A = sortedPoints[edges[j].Item1];
+                        var B = sortedPoints[edges[j].Item2];
+                        var C = sortedPoints[edges[k].Item2];
+
+                        if (CrossProduct(B - A, C - B) > 0)
+                        {
+                            break;
+                        }
+
+                        edges.RemoveAt(edges.Count - 1);
+                    }
+
+                    edges.Add(new Tuple<int, int>(i, edges.Count));
+                }
+
+                edges.RemoveAt(edges.Count - 1);
+
+                List<Tuple<int, int>> result = new List<Tuple<int, int>>();
+                for (int i = 0; i < edges.Count; i++)
+                {
+                    int a = edges[i].Item1;
+                    int b = edges[i].Item2;
+                    var A = sortedPoints[a];
+                    var B = sortedPoints[b];
+                    bool flag = true;
+
+                    for (int j = 0; j < n; j++)
+                    {
+                        if (j == a || j == b)
+                        {
+                            continue;
+                        }
+
+                        var P = sortedPoints[j];
+                        if (InsideCircle(A, B, P, sortedPoints[(a + b) >> 1]))
+                        {
+                            flag = false;
+                            break;
+                        }
+                    }
+
+                    if (flag)
+                    {
+                        result.Add(new Tuple<int, int>(a, b));
+                        // Draw line
+                        Line line = new Line
+                        {
+                            X1 = A.X,
+                            Y1 = A.Y,
+                            X2 = B.X,
+                            Y2 = B.Y,
+                            Stroke = Brushes.Black,
+                            StrokeThickness = 3
+                        };
+                        MainCanvas.Children.Add(line);
+                    }
+                }
+
+                return result;
+            }
+
+            if (_points is null ||  _points.Count < 3)
+            {
+                // Cannot draw Delone triangulation without a valid polygon
+                return;
+            }
+
+            List<Point> points = new List<Point>();
+            for (int i = 0; i < _points.Count; i++)
+            {
+                points.Add(_points[i]);
+            }
+            List<Tuple<int, int>> triangulation = Triangulate(points);
+        }
 
 
+        private Tuple<List<Tuple<int, int>>, List<Tuple<double, double>>> ComputeVoronoi(List<Tuple<double, double>> points, double[]? bbox = null)
+        {
+            double minDistance = 0.1;
+            if (bbox == null)
+            {
+                double xmin = points[0].Item1;
+                double xmax = points[0].Item1;
+                double ymin = points[0].Item2;
+                double ymax = points[0].Item2;
+                foreach (var point in points)
+                {
+                    xmin = Math.Min(xmin, point.Item1);
+                    xmax = Math.Max(xmax, point.Item1);
+                    ymin = Math.Min(ymin, point.Item2);
+                    ymax = Math.Max(ymax, point.Item2);
+                }
+                double xrange = xmax - xmin;
+                double yrange = ymax - ymin;
+                double padding = Math.Max(xrange, yrange) * 0.1;
+                bbox = new double[] {
+                xmin - padding, xmax + padding,
+                ymin - padding, ymax + padding
+            };
+            }
 
+            List<Tuple<double, double>> extendedPoints = new List<Tuple<double, double>>(points);
+            extendedPoints.Add(new Tuple<double, double>(bbox[0], bbox[2]));
+            extendedPoints.Add(new Tuple<double, double>(bbox[0], bbox[3]));
+            extendedPoints.Add(new Tuple<double, double>(bbox[1], bbox[2]));
+            extendedPoints.Add(new Tuple<double, double>(bbox[1], bbox[3]));
+
+            List<Tuple<int, int>> lines = new List<Tuple<int, int>>();
+            List<Tuple<double, double>> vertices = new List<Tuple<double, double>>();
+
+            foreach (var point in extendedPoints)
+            {
+                List<int> segments = new List<int>();
+                foreach (var vertex in vertices)
+                {
+                    double distance = Math.Sqrt(Math.Pow(point.Item1 - vertex.Item1, 2) + Math.Pow(point.Item2 - vertex.Item2, 2));
+                    if (distance <= minDistance)
+                    {
+                        segments.Add(vertices.IndexOf(vertex));
+                    }
+                }
+
+                if (segments.Count >= 2)
+                {
+                    lines.Add(new Tuple<int, int>(segments[0], segments[1]));
+                }
+
+                vertices.Add(point);
+            }
+
+            return new Tuple<List<Tuple<int, int>>, List<Tuple<double, double>>>(lines, vertices);
+        }
+
+        // Method to draw the Voronoi diagram
+        private void DrawVoronoiDiagram(List<Tuple<double, double>> points)
+        {
+            var result = ComputeVoronoi(points);
+            var lines = result.Item1;
+            var vertices = result.Item2;
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                var line = lines[i];
+                var x1 = vertices[(int)line.Item1].Item1;
+                var y1 = vertices[(int)line.Item1].Item2;
+                var x2 = vertices[(int)line.Item2].Item1;
+                var y2 = vertices[(int)line.Item2].Item2;
+                DrawLine(x1, y1, x2, y2, Brushes.Blue);
+            }
+
+            foreach (var point in points)
+            {
+                var x = point.Item1;
+                var y = point.Item2;
+                DrawEllipse(x - 2, y - 2, 4, 4, Brushes.Red);
+            }
+        }
+
+        // Helper method to draw a line
+        private void DrawLine(double x1, double y1, double x2, double y2, SolidColorBrush color)
+        {
+            Line line = new Line
+            {
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2,
+                Stroke = color,
+                StrokeThickness = 1
+            };
+            MainCanvas.Children.Add(line);
+        }
+
+        // Helper method to draw an ellipse
+        private void DrawEllipse(double x, double y, double width, double height, SolidColorBrush color)
+        {
+            Ellipse ellipse = new Ellipse
+            {
+                Width = width,
+                Height = height,
+                Fill = color
+            };
+            Canvas.SetLeft(ellipse, x);
+            Canvas.SetTop(ellipse, y);
+            MainCanvas.Children.Add(ellipse);
+        }
     }
 }
